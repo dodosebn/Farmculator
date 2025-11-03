@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle } from "lucide-react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "@tanstack/react-router";
 import UseLogo from "@/hooks/useLogo";
+
+import {
+  doCreateUserWithEmailAndPassword,
+  doSignInWithEmailAndPassword,
+  doSignInWithGoogle,
+} from "@/auth/authCarrier";
 
 const AuthUI = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -16,6 +22,7 @@ const AuthUI = () => {
 
   const navigate = useNavigate();
 
+  // ✅ Handle Sign Up / Sign In
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setError("");
@@ -30,55 +37,52 @@ const AuthUI = () => {
 
     try {
       if (isSignUp) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await doCreateUserWithEmailAndPassword(email, password);
         toast.success("Account created successfully 🎉");
-
-        setTimeout(() => {
-          navigate({ to: "/Dashboard" });
-        }, 1500);
       } else {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await doSignInWithEmailAndPassword(email, password);
         toast.success("Signed in successfully 🚀");
-
-        setTimeout(() => {
-          navigate({ to: "/Dashboard" });
-        }, 1500);
       }
-    } catch (err: any) {
-      setError(err.message || "An error occurred");
-      toast.error("Something went wrong ❌");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    setError("");
-    setLoading(true);
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      toast.success("Google sign-in successful 🌈");
 
       setTimeout(() => {
         navigate({ to: "/Dashboard" });
       }, 1500);
     } catch (err: any) {
+      setError(err.message || "Authentication failed");
+      toast.error(err.message || "Something went wrong ❌");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ Handle Google Sign In
+  const handleGoogleSignIn = async () => {
+    setError("");
+    setLoading(true);
+
+    try {
+      await doSignInWithGoogle();
+      toast.success("Google sign-in successful 🌈");
+      setTimeout(() => {
+        navigate({ to: "/Dashboard" });
+      }, 1500);
+    } catch (err: any) {
       setError(err.message || "Google sign-in failed");
-      toast.error("Google sign-in failed ❌");
+      toast.error(err.message || "Google sign-in failed ❌");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-purple-600 via-blue-600 to-cyan-500 flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <ToastContainer position="top-right" autoClose={2000} />
       <div className="w-full max-w-md">
         <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl p-8 space-y-6">
           <div className="text-center space-y-2">
             <div className="inline-flex items-center justify-center mb-4">
-<UseLogo />            </div>
+              <UseLogo />
+            </div>
             <h1 className="text-3xl font-bold text-gray-900">
               {isSignUp ? "Create Account" : "Welcome Back"}
             </h1>
@@ -138,6 +142,7 @@ const AuthUI = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
+                  required
                   className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:bg-white focus:outline-none transition-all duration-200"
                 />
               </div>
@@ -154,6 +159,7 @@ const AuthUI = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
+                  required
                   className="w-full pl-12 pr-12 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:bg-white focus:outline-none transition-all duration-200"
                 />
                 <button
@@ -182,6 +188,7 @@ const AuthUI = () => {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••"
+                    required
                     className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:bg-white focus:outline-none transition-all duration-200"
                   />
                 </div>
