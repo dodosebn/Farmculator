@@ -45,7 +45,7 @@ const AuthUI = () => {
       }
 
       setTimeout(() => {
-        navigate({ to: "/Dashboard" });
+        navigate({ to: "/in/Dashboard" });
       }, 1500);
     } catch (err: any) {
       setError(err.message || "Authentication failed");
@@ -55,16 +55,15 @@ const AuthUI = () => {
     }
   };
 
-  // ✅ Handle Google Sign In
   const handleGoogleSignIn = async () => {
     setError("");
     setLoading(true);
 
     try {
       await doSignInWithGoogle();
-      toast.success("Google sign-in successful 🌈");
+      toast.success("Google sign-in successful ✔");
       setTimeout(() => {
-        navigate({ to: "/Dashboard" });
+        navigate({ to: "/in/Dashboard" });
       }, 1500);
     } catch (err: any) {
       setError(err.message || "Google sign-in failed");
@@ -78,7 +77,7 @@ const AuthUI = () => {
     <div className="min-h-screen flex items-center justify-center p-4">
       <ToastContainer position="top-right" autoClose={2000} />
       <div className="w-full max-w-md">
-        <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl p-8 space-y-6">
+        <div className="bg-white/95 backdrop-blur-lg shadow-2xl p-8 space-y-6">
           <div className="text-center space-y-2">
             <div className="inline-flex items-center justify-center mb-4">
               <UseLogo />
@@ -141,9 +140,10 @@ const AuthUI = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
+                  placeholder="youremail@gmail.com"
                   required
-                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:bg-white focus:outline-none transition-all duration-200"
+                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-200 
+                  rounded-xl focus:border-purple-500 focus:bg-white focus:outline-none transition-all duration-200"
                 />
               </div>
             </div>
@@ -198,7 +198,8 @@ const AuthUI = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-3.5 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-linear-to-r from-green-800 to-green-800
+               hover:from-green-900 hover:to-green-800 text-white font-bold py-3.5 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <div className="w-6 h-6 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -220,7 +221,7 @@ const AuthUI = () => {
                   setError("");
                   setConfirmPassword("");
                 }}
-                className="text-purple-600 hover:text-purple-700 font-bold"
+                className="text-[#778871] font-bold"
               >
                 {isSignUp ? "Sign In" : "Sign Up"}
               </button>
@@ -228,9 +229,9 @@ const AuthUI = () => {
           </div>
         </div>
 
-        <p className="text-center text-white/80 text-sm mt-6">
+        {/* <p className="text-center text-white/80 text-sm mt-6">
           Protected by Firebase Authentication
-        </p>
+        </p> */}
       </div>
     </div>
   );

@@ -1,7 +1,4 @@
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-// import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-// import { TanStackDevtools } from '@tanstack/react-devtools'
-
+import { HeadContent, Outlet, Scripts, createRootRoute, useMatches } from '@tanstack/react-router'
 
 import appCss from '../styles.css?url'
 import NavBar from '@/components/home/nav/navBar'
@@ -28,19 +25,24 @@ export const Route = createRootRoute({
     ],
   }),
 
-  shellComponent: RootDocument,
+  component: RootDocument,
 })
 
-function RootDocument({ children }: { children: React.ReactNode }) {
+function RootDocument() {
+  const matches = useMatches()
+  
+  const hideNav = matches.some(match => 
+    match.pathname.startsWith('/in')
+  )
+
   return (
     <html lang="en">
       <head>
         <HeadContent />
       </head>
       <body>
-        <NavBar />
-        {children}
-
+        {!hideNav && <NavBar />}
+        <Outlet />
         <Scripts />
       </body>
     </html>

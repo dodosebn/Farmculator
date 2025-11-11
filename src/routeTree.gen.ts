@@ -8,10 +8,13 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as DashboardRouteImport } from './routes/Dashboard'
 import { Route as AccountRouteImport } from './routes/Account'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as In_layoutRouteImport } from './routes/in/__layout'
+import { Route as InDashboardRouteImport } from './routes/in/Dashboard'
 import { Route as ApiVerifyRouteImport } from './routes/api/verify'
 import { Route as DemoStartServerFuncsRouteImport } from './routes/demo/start.server-funcs'
 import { Route as DemoStartApiRequestRouteImport } from './routes/demo/start.api-request'
@@ -21,9 +24,11 @@ import { Route as DemoStartSsrSpaModeRouteImport } from './routes/demo/start.ssr
 import { Route as DemoStartSsrFullSsrRouteImport } from './routes/demo/start.ssr.full-ssr'
 import { Route as DemoStartSsrDataOnlyRouteImport } from './routes/demo/start.ssr.data-only'
 
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/Dashboard',
-  path: '/Dashboard',
+const InRouteImport = createFileRoute('/in')()
+
+const InRoute = InRouteImport.update({
+  id: '/in',
+  path: '/in',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccountRoute = AccountRouteImport.update({
@@ -34,6 +39,15 @@ const AccountRoute = AccountRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const In_layoutRoute = In_layoutRouteImport.update({
+  id: '/__layout',
+  getParentRoute: () => InRoute,
+} as any)
+const InDashboardRoute = InDashboardRouteImport.update({
+  id: '/in/Dashboard',
+  path: '/in/Dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiVerifyRoute = ApiVerifyRouteImport.update({
@@ -80,8 +94,9 @@ const DemoStartSsrDataOnlyRoute = DemoStartSsrDataOnlyRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/Account': typeof AccountRoute
-  '/Dashboard': typeof DashboardRoute
   '/api/verify': typeof ApiVerifyRoute
+  '/in/Dashboard': typeof InDashboardRoute
+  '/in': typeof In_layoutRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
@@ -93,8 +108,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/Account': typeof AccountRoute
-  '/Dashboard': typeof DashboardRoute
   '/api/verify': typeof ApiVerifyRoute
+  '/in/Dashboard': typeof InDashboardRoute
+  '/in': typeof In_layoutRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
@@ -107,8 +123,10 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/Account': typeof AccountRoute
-  '/Dashboard': typeof DashboardRoute
   '/api/verify': typeof ApiVerifyRoute
+  '/in/Dashboard': typeof InDashboardRoute
+  '/in': typeof InRouteWithChildren
+  '/in/__layout': typeof In_layoutRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
@@ -122,8 +140,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/Account'
-    | '/Dashboard'
     | '/api/verify'
+    | '/in/Dashboard'
+    | '/in'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
@@ -135,8 +154,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/Account'
-    | '/Dashboard'
     | '/api/verify'
+    | '/in/Dashboard'
+    | '/in'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
@@ -148,8 +168,10 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/Account'
-    | '/Dashboard'
     | '/api/verify'
+    | '/in/Dashboard'
+    | '/in'
+    | '/in/__layout'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
@@ -162,8 +184,9 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRoute
-  DashboardRoute: typeof DashboardRoute
   ApiVerifyRoute: typeof ApiVerifyRoute
+  InDashboardRoute: typeof InDashboardRoute
+  InRoute: typeof InRouteWithChildren
   DemoApiNamesRoute: typeof DemoApiNamesRoute
   DemoStartApiRequestRoute: typeof DemoStartApiRequestRoute
   DemoStartServerFuncsRoute: typeof DemoStartServerFuncsRoute
@@ -175,11 +198,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/Dashboard': {
-      id: '/Dashboard'
-      path: '/Dashboard'
-      fullPath: '/Dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
+    '/in': {
+      id: '/in'
+      path: '/in'
+      fullPath: '/in'
+      preLoaderRoute: typeof InRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/Account': {
@@ -194,6 +217,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/in/__layout': {
+      id: '/in/__layout'
+      path: '/in'
+      fullPath: '/in'
+      preLoaderRoute: typeof In_layoutRouteImport
+      parentRoute: typeof InRoute
+    }
+    '/in/Dashboard': {
+      id: '/in/Dashboard'
+      path: '/in/Dashboard'
+      fullPath: '/in/Dashboard'
+      preLoaderRoute: typeof InDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/verify': {
@@ -255,11 +292,22 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface InRouteChildren {
+  In_layoutRoute: typeof In_layoutRoute
+}
+
+const InRouteChildren: InRouteChildren = {
+  In_layoutRoute: In_layoutRoute,
+}
+
+const InRouteWithChildren = InRoute._addFileChildren(InRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRoute,
-  DashboardRoute: DashboardRoute,
   ApiVerifyRoute: ApiVerifyRoute,
+  InDashboardRoute: InDashboardRoute,
+  InRoute: InRouteWithChildren,
   DemoApiNamesRoute: DemoApiNamesRoute,
   DemoStartApiRequestRoute: DemoStartApiRequestRoute,
   DemoStartServerFuncsRoute: DemoStartServerFuncsRoute,
