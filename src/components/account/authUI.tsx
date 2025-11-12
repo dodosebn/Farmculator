@@ -4,12 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "@tanstack/react-router";
 import UseLogo from "@/hooks/useLogo";
-
-import {
-  doCreateUserWithEmailAndPassword,
-  doSignInWithEmailAndPassword,
-  doSignInWithGoogle,
-} from "@/auth/authCarrier";
+import { supabase } from "@/store/supabase";
 
 const AuthUI = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -22,7 +17,6 @@ const AuthUI = () => {
 
   const navigate = useNavigate();
 
-  // ✅ Handle Sign Up / Sign In
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setError("");
@@ -37,10 +31,20 @@ const AuthUI = () => {
 
     try {
       if (isSignUp) {
-        await doCreateUserWithEmailAndPassword(email, password);
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+        });
+        
+        if (error) throw error;
         toast.success("Account created successfully 🎉");
       } else {
-        await doSignInWithEmailAndPassword(email, password);
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        
+        if (error) throw error;
         toast.success("Signed in successfully 🚀");
       }
 
@@ -60,15 +64,18 @@ const AuthUI = () => {
     setLoading(true);
 
     try {
-      await doSignInWithGoogle();
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/in/Dashboard`,
+        },
+      });
+      
+      if (error) throw error;
       toast.success("Google sign-in successful ✔");
-      setTimeout(() => {
-        navigate({ to: "/in/Dashboard" });
-      }, 1500);
     } catch (err: any) {
       setError(err.message || "Google sign-in failed");
       toast.error(err.message || "Google sign-in failed ❌");
-    } finally {
       setLoading(false);
     }
   };
@@ -97,7 +104,7 @@ const AuthUI = () => {
             </div>
           )}
 
-          <button
+          {/* <button
             onClick={handleGoogleSignIn}
             disabled={loading}
             className="w-full bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-700 font-semibold py-3.5 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-3 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
@@ -121,7 +128,7 @@ const AuthUI = () => {
               />
             </svg>
             Continue with Google
-          </button>
+          </button> */}
 
           <div className="flex items-center gap-4">
             <div className="flex-1 h-px bg-gray-300"></div>
@@ -229,9 +236,9 @@ const AuthUI = () => {
           </div>
         </div>
 
-        {/* <p className="text-center text-white/80 text-sm mt-6">
-          Protected by Firebase Authentication
-        </p> */}
+        <p className="text-center text-white/80 text-sm mt-6">
+          Protected by Supabase Authentication
+        </p>
       </div>
     </div>
   );

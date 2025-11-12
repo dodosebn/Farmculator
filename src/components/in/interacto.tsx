@@ -2,7 +2,7 @@ import Buttino from "./customs/buttino";
 
 const Interacto = () => {
   const Todos = [
-    { name: "Track Sales" },
+    // { name: "Track Sales" },
     { name: "Manage Records" },
     { name: "Chat With AI Farm Advisor" },
     { name: "Yield Predictor" },

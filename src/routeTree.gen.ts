@@ -19,6 +19,10 @@ import { Route as ApiVerifyRouteImport } from './routes/api/verify'
 import { Route as DemoStartServerFuncsRouteImport } from './routes/demo/start.server-funcs'
 import { Route as DemoStartApiRequestRouteImport } from './routes/demo/start.api-request'
 import { Route as DemoApiNamesRouteImport } from './routes/demo/api.names'
+import { Route as ApiSalesUpdateRouteImport } from './routes/api/sales/update'
+import { Route as ApiSalesFetchRouteImport } from './routes/api/sales/fetch'
+import { Route as ApiSalesDeleteRouteImport } from './routes/api/sales/delete'
+import { Route as ApiSalesAddRouteImport } from './routes/api/sales/add'
 import { Route as DemoStartSsrIndexRouteImport } from './routes/demo/start.ssr.index'
 import { Route as DemoStartSsrSpaModeRouteImport } from './routes/demo/start.ssr.spa-mode'
 import { Route as DemoStartSsrFullSsrRouteImport } from './routes/demo/start.ssr.full-ssr'
@@ -70,6 +74,26 @@ const DemoApiNamesRoute = DemoApiNamesRouteImport.update({
   path: '/demo/api/names',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSalesUpdateRoute = ApiSalesUpdateRouteImport.update({
+  id: '/api/sales/update',
+  path: '/api/sales/update',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSalesFetchRoute = ApiSalesFetchRouteImport.update({
+  id: '/api/sales/fetch',
+  path: '/api/sales/fetch',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSalesDeleteRoute = ApiSalesDeleteRouteImport.update({
+  id: '/api/sales/delete',
+  path: '/api/sales/delete',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSalesAddRoute = ApiSalesAddRouteImport.update({
+  id: '/api/sales/add',
+  path: '/api/sales/add',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DemoStartSsrIndexRoute = DemoStartSsrIndexRouteImport.update({
   id: '/demo/start/ssr/',
   path: '/demo/start/ssr/',
@@ -97,6 +121,10 @@ export interface FileRoutesByFullPath {
   '/api/verify': typeof ApiVerifyRoute
   '/in/Dashboard': typeof InDashboardRoute
   '/in': typeof In_layoutRoute
+  '/api/sales/add': typeof ApiSalesAddRoute
+  '/api/sales/delete': typeof ApiSalesDeleteRoute
+  '/api/sales/fetch': typeof ApiSalesFetchRoute
+  '/api/sales/update': typeof ApiSalesUpdateRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
@@ -111,6 +139,10 @@ export interface FileRoutesByTo {
   '/api/verify': typeof ApiVerifyRoute
   '/in/Dashboard': typeof InDashboardRoute
   '/in': typeof In_layoutRoute
+  '/api/sales/add': typeof ApiSalesAddRoute
+  '/api/sales/delete': typeof ApiSalesDeleteRoute
+  '/api/sales/fetch': typeof ApiSalesFetchRoute
+  '/api/sales/update': typeof ApiSalesUpdateRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
@@ -127,6 +159,10 @@ export interface FileRoutesById {
   '/in/Dashboard': typeof InDashboardRoute
   '/in': typeof InRouteWithChildren
   '/in/__layout': typeof In_layoutRoute
+  '/api/sales/add': typeof ApiSalesAddRoute
+  '/api/sales/delete': typeof ApiSalesDeleteRoute
+  '/api/sales/fetch': typeof ApiSalesFetchRoute
+  '/api/sales/update': typeof ApiSalesUpdateRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
@@ -143,6 +179,10 @@ export interface FileRouteTypes {
     | '/api/verify'
     | '/in/Dashboard'
     | '/in'
+    | '/api/sales/add'
+    | '/api/sales/delete'
+    | '/api/sales/fetch'
+    | '/api/sales/update'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
@@ -157,6 +197,10 @@ export interface FileRouteTypes {
     | '/api/verify'
     | '/in/Dashboard'
     | '/in'
+    | '/api/sales/add'
+    | '/api/sales/delete'
+    | '/api/sales/fetch'
+    | '/api/sales/update'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
@@ -172,6 +216,10 @@ export interface FileRouteTypes {
     | '/in/Dashboard'
     | '/in'
     | '/in/__layout'
+    | '/api/sales/add'
+    | '/api/sales/delete'
+    | '/api/sales/fetch'
+    | '/api/sales/update'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
@@ -187,6 +235,10 @@ export interface RootRouteChildren {
   ApiVerifyRoute: typeof ApiVerifyRoute
   InDashboardRoute: typeof InDashboardRoute
   InRoute: typeof InRouteWithChildren
+  ApiSalesAddRoute: typeof ApiSalesAddRoute
+  ApiSalesDeleteRoute: typeof ApiSalesDeleteRoute
+  ApiSalesFetchRoute: typeof ApiSalesFetchRoute
+  ApiSalesUpdateRoute: typeof ApiSalesUpdateRoute
   DemoApiNamesRoute: typeof DemoApiNamesRoute
   DemoStartApiRequestRoute: typeof DemoStartApiRequestRoute
   DemoStartServerFuncsRoute: typeof DemoStartServerFuncsRoute
@@ -261,6 +313,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoApiNamesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/sales/update': {
+      id: '/api/sales/update'
+      path: '/api/sales/update'
+      fullPath: '/api/sales/update'
+      preLoaderRoute: typeof ApiSalesUpdateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/sales/fetch': {
+      id: '/api/sales/fetch'
+      path: '/api/sales/fetch'
+      fullPath: '/api/sales/fetch'
+      preLoaderRoute: typeof ApiSalesFetchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/sales/delete': {
+      id: '/api/sales/delete'
+      path: '/api/sales/delete'
+      fullPath: '/api/sales/delete'
+      preLoaderRoute: typeof ApiSalesDeleteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/sales/add': {
+      id: '/api/sales/add'
+      path: '/api/sales/add'
+      fullPath: '/api/sales/add'
+      preLoaderRoute: typeof ApiSalesAddRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/demo/start/ssr/': {
       id: '/demo/start/ssr/'
       path: '/demo/start/ssr'
@@ -308,6 +388,10 @@ const rootRouteChildren: RootRouteChildren = {
   ApiVerifyRoute: ApiVerifyRoute,
   InDashboardRoute: InDashboardRoute,
   InRoute: InRouteWithChildren,
+  ApiSalesAddRoute: ApiSalesAddRoute,
+  ApiSalesDeleteRoute: ApiSalesDeleteRoute,
+  ApiSalesFetchRoute: ApiSalesFetchRoute,
+  ApiSalesUpdateRoute: ApiSalesUpdateRoute,
   DemoApiNamesRoute: DemoApiNamesRoute,
   DemoStartApiRequestRoute: DemoStartApiRequestRoute,
   DemoStartServerFuncsRoute: DemoStartServerFuncsRoute,

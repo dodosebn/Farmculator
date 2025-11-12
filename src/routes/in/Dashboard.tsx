@@ -1,6 +1,5 @@
-import Headers from '@/components/in/headers'
 import Interacto from '@/components/in/interacto'
-import TrackSales from '@/components/in/trackSales'
+import SaleRecorder from '@/components/in/saleRecorder'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/in/Dashboard')({
@@ -9,8 +8,7 @@ export const Route = createFileRoute('/in/Dashboard')({
 
 function RouteComponent() {
   return <div>
-    <Headers />
     <Interacto />
-    <TrackSales />
+    <SaleRecorder />
   </div>
 }
