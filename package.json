@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.53.4",
+    "@google/generative-ai": "^0.24.1",
     "@supabase/supabase-js": "^2.81.1",
     "@tailwindcss/vite": "^4.0.6",
     "@tanstack/nitro-v2-vite-plugin": "^1.132.31",
@@ -22,9 +23,11 @@
     "@unpic/react": "^0.0.11",
     "firebase-admin": "^13.5.0",
     "lucide-react": "^0.544.0",
+    "openai": "^6.8.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-toastify": "^11.0.5",
+    "recharts": "^3.4.1",
     "tailwindcss": "^4.0.6",
     "vite-tsconfig-paths": "^5.1.4",
     "zustand": "^5.0.8"

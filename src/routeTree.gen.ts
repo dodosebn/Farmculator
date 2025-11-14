@@ -15,7 +15,7 @@ import { Route as AccountRouteImport } from './routes/Account'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as In_layoutRouteImport } from './routes/in/__layout'
 import { Route as InDashboardRouteImport } from './routes/in/Dashboard'
-import { Route as ApiVerifyRouteImport } from './routes/api/verify'
+import { Route as ApiAiSummaryRouteImport } from './routes/api/ai-summary'
 import { Route as DemoStartServerFuncsRouteImport } from './routes/demo/start.server-funcs'
 import { Route as DemoStartApiRequestRouteImport } from './routes/demo/start.api-request'
 import { Route as DemoApiNamesRouteImport } from './routes/demo/api.names'
@@ -54,9 +54,9 @@ const InDashboardRoute = InDashboardRouteImport.update({
   path: '/in/Dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiVerifyRoute = ApiVerifyRouteImport.update({
-  id: '/api/verify',
-  path: '/api/verify',
+const ApiAiSummaryRoute = ApiAiSummaryRouteImport.update({
+  id: '/api/ai-summary',
+  path: '/api/ai-summary',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DemoStartServerFuncsRoute = DemoStartServerFuncsRouteImport.update({
@@ -118,7 +118,7 @@ const DemoStartSsrDataOnlyRoute = DemoStartSsrDataOnlyRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/Account': typeof AccountRoute
-  '/api/verify': typeof ApiVerifyRoute
+  '/api/ai-summary': typeof ApiAiSummaryRoute
   '/in/Dashboard': typeof InDashboardRoute
   '/in': typeof In_layoutRoute
   '/api/sales/add': typeof ApiSalesAddRoute
@@ -136,7 +136,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/Account': typeof AccountRoute
-  '/api/verify': typeof ApiVerifyRoute
+  '/api/ai-summary': typeof ApiAiSummaryRoute
   '/in/Dashboard': typeof InDashboardRoute
   '/in': typeof In_layoutRoute
   '/api/sales/add': typeof ApiSalesAddRoute
@@ -155,7 +155,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/Account': typeof AccountRoute
-  '/api/verify': typeof ApiVerifyRoute
+  '/api/ai-summary': typeof ApiAiSummaryRoute
   '/in/Dashboard': typeof InDashboardRoute
   '/in': typeof InRouteWithChildren
   '/in/__layout': typeof In_layoutRoute
@@ -176,7 +176,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/Account'
-    | '/api/verify'
+    | '/api/ai-summary'
     | '/in/Dashboard'
     | '/in'
     | '/api/sales/add'
@@ -194,7 +194,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/Account'
-    | '/api/verify'
+    | '/api/ai-summary'
     | '/in/Dashboard'
     | '/in'
     | '/api/sales/add'
@@ -212,7 +212,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/Account'
-    | '/api/verify'
+    | '/api/ai-summary'
     | '/in/Dashboard'
     | '/in'
     | '/in/__layout'
@@ -232,7 +232,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRoute
-  ApiVerifyRoute: typeof ApiVerifyRoute
+  ApiAiSummaryRoute: typeof ApiAiSummaryRoute
   InDashboardRoute: typeof InDashboardRoute
   InRoute: typeof InRouteWithChildren
   ApiSalesAddRoute: typeof ApiSalesAddRoute
@@ -285,11 +285,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/verify': {
-      id: '/api/verify'
-      path: '/api/verify'
-      fullPath: '/api/verify'
-      preLoaderRoute: typeof ApiVerifyRouteImport
+    '/api/ai-summary': {
+      id: '/api/ai-summary'
+      path: '/api/ai-summary'
+      fullPath: '/api/ai-summary'
+      preLoaderRoute: typeof ApiAiSummaryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/demo/start/server-funcs': {
@@ -385,7 +385,7 @@ const InRouteWithChildren = InRoute._addFileChildren(InRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRoute,
-  ApiVerifyRoute: ApiVerifyRoute,
+  ApiAiSummaryRoute: ApiAiSummaryRoute,
   InDashboardRoute: InDashboardRoute,
   InRoute: InRouteWithChildren,
   ApiSalesAddRoute: ApiSalesAddRoute,

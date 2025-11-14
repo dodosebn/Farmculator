@@ -1,16 +1,47 @@
-"use client";
 import { useEffect, useState, ChangeEvent, FormEvent } from "react";
 import { useSalesStore } from "@/store/salesStore";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  Cell, // <-- ADDED: Cell for custom bar colors
+} from "recharts";
+
+const COLORS = [
+  "#0088FE",
+  "#00C49F",
+  "#FFBB28",
+  "#FF8042",
+  "#8884D8",
+  "#82CA9D",
+];
 
 const SaleRecorder = () => {
-  const { sales, fetchSales, addSale, deleteSale, updateSale, loading } = useSalesStore();
-  const [formData, setFormData] = useState({ product: "", quantity: "", price: "" });
+  const { sales, fetchSales, addSale, deleteSale, updateSale, loading } =
+    useSalesStore();
+
+  const [formData, setFormData] = useState({
+    product: "",
+    quantity: "",
+    price: "",
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [aiSummary, setAiSummary] = useState("");
+  const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
+  const [activeTab, setActiveTab] = useState<"list" | "charts" | "ai">("list");
 
   useEffect(() => {
     fetchSales();
   }, [fetchSales]);
+
+  const totalRevenue = sales.reduce((sum, s) => sum + s.total, 0);
+  const totalQuantity = sales.reduce((sum, s) => sum + s.quantity, 0);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -21,6 +52,7 @@ const SaleRecorder = () => {
     if (!formData.product || !formData.quantity || !formData.price) return;
 
     setIsSubmitting(true);
+
     const saleData = {
       product: formData.product.trim(),
       quantity: Number(formData.quantity),
@@ -28,15 +60,20 @@ const SaleRecorder = () => {
       total: Number(formData.quantity) * Number(formData.price),
     };
 
-    if (editingId) {
-      await updateSale(editingId, saleData);
-      setEditingId(null);
-    } else {
-      await addSale(saleData);
-    }
+    try {
+      if (editingId) {
+        await updateSale(editingId, saleData);
+        setEditingId(null);
+      } else {
+        await addSale(saleData);
+      }
 
-    setFormData({ product: "", quantity: "", price: "" });
-    setIsSubmitting(false);
+      setFormData({ product: "", quantity: "", price: "" });
+    } catch (err) {
+      console.error("Error submitting sale:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleEditSale = (sale: any) => {
@@ -49,7 +86,11 @@ const SaleRecorder = () => {
   };
 
   const handleDeleteSale = async (id: number) => {
-    await deleteSale(id);
+    try {
+      await deleteSale(id);
+    } catch (err) {
+      console.error("Error deleting sale:", err);
+    }
   };
 
   const cancelEdit = () => {
@@ -57,11 +98,88 @@ const SaleRecorder = () => {
     setFormData({ product: "", quantity: "", price: "" });
   };
 
-  const totalRevenue = sales.reduce((sum, s) => sum + s.total, 0);
-  const totalQuantity = sales.reduce((sum, s) => sum + s.quantity, 0);
+  const generateAISummary = async () => {
+    if (sales.length === 0) return;
+
+    setIsGeneratingSummary(true);
+    try {
+      const productsBreakdown = sales.reduce((acc: any, sale) => {
+        if (!acc[sale.product]) {
+          acc[sale.product] = {
+            totalRevenue: 0,
+            totalQuantity: 0,
+            count: 0,
+          };
+        }
+        acc[sale.product].totalRevenue += sale.total;
+        acc[sale.product].totalQuantity += sale.quantity;
+        acc[sale.product].count += 1;
+        return acc;
+      }, {});
+
+      // Calculate top products
+      const productEntries = Object.entries(productsBreakdown) as [
+        string,
+        { totalRevenue: number; totalQuantity: number; count: number }
+      ][];
+
+      const topRevenueProduct = productEntries.reduce(
+        (max, [name, stats]) =>
+          stats.totalRevenue > max.stats.totalRevenue ? { name, stats } : max,
+        { name: "", stats: { totalRevenue: -1 } }
+      ).name;
+
+      const topQuantityProduct = productEntries.reduce(
+        (max, [name, stats]) =>
+          stats.totalQuantity > max.stats.totalQuantity ? { name, stats } : max,
+        { name: "", stats: { totalQuantity: -1 } }
+      ).name;
+
+      const salesData = {
+        totalSales: sales.length,
+        totalRevenue,
+        totalQuantity,
+        products: productsBreakdown,
+        averagePrice: totalQuantity > 0 ? totalRevenue / totalQuantity : 0,
+        highestSale: Math.max(...sales.map((s) => s.total)),
+        lowestSale: Math.min(...sales.map((s) => s.total)),
+        topRevenueProduct, // <-- ADDED
+        topQuantityProduct, // <-- ADDED
+      };
+
+      const response = await fetch("/api/ai-summary", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ salesData }),
+      });
+
+      if (!response.ok) throw new Error("Failed to generate summary");
+
+      const data = await response.json();
+      setAiSummary(data.summary);
+      setActiveTab("ai");
+    } catch (error) {
+      console.error("Error generating AI summary:", error);
+      setAiSummary(
+        "Sorry, I couldn't generate a summary at the moment. Please try again later."
+      );
+    } finally {
+      setIsGeneratingSummary(false);
+    }
+  };
+
+  const productRevenueData = Object.entries(
+    sales.reduce((acc: any, sale) => {
+      acc[sale.product] = (acc[sale.product] || 0) + sale.total;
+      return acc;
+    }, {})
+  ).map(([product, revenue]) => ({
+    product,
+    revenue: Number(revenue),
+  }));
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto p-6">
       {/* Header */}
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-3 mb-3">
@@ -74,62 +192,56 @@ const SaleRecorder = () => {
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8">
-        {/* Form Section */}
+        {/* Form */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
             <h2 className="text-xl font-semibold mb-6 text-gray-800">
               {editingId ? "Edit Sale" : "Add New Sale"}
             </h2>
-            
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="product" className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Product Name *
                 </label>
                 <input
                   type="text"
-                  id="product"
                   name="product"
-                  placeholder="e.g., Organic Wheat"
                   value={formData.product}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                  placeholder="e.g., Organic Wheat"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Quantity *
                   </label>
                   <input
                     type="number"
-                    id="quantity"
                     name="quantity"
-                    placeholder="0"
                     min="1"
                     value={formData.quantity}
                     onChange={handleChange}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     required
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Price (₦) *
                   </label>
                   <input
                     type="number"
-                    id="price"
                     name="price"
-                    placeholder="0.00"
                     min="0"
                     step="0.01"
                     value={formData.price}
                     onChange={handleChange}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     required
                   />
                 </div>
@@ -138,7 +250,10 @@ const SaleRecorder = () => {
               {formData.quantity && formData.price && (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                   <p className="text-sm text-green-800 font-medium">
-                    Total: ₦{(Number(formData.quantity) * Number(formData.price)).toLocaleString()}
+                    Total: ₦
+                    {(
+                      Number(formData.quantity) * Number(formData.price)
+                    ).toLocaleString()}
                   </p>
                 </div>
               )}
@@ -146,22 +261,22 @@ const SaleRecorder = () => {
               <div className="flex gap-3">
                 <button
                   type="submit"
-                  disabled={isSubmitting || !formData.product || !formData.quantity || !formData.price}
-                  className="flex-1 bg-gradient-to-r from-green-600 to-green-700 text-white py-3 rounded-lg font-semibold hover:from-green-700 hover:to-green-800 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                  disabled={
+                    isSubmitting ||
+                    !formData.product ||
+                    !formData.quantity ||
+                    !formData.price
+                  }
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold transition-all duration-200"
                 >
-                  {isSubmitting ? (
-                    <span className="flex items-center justify-center">
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      {editingId ? "Updating..." : "Adding..."}
-                    </span>
-                  ) : (
-                    editingId ? "Update Sale" : "Add Sale"
-                  )}
+                  {isSubmitting
+                    ? editingId
+                      ? "Updating..."
+                      : "Adding..."
+                    : editingId
+                    ? "Update Sale"
+                    : "Add Sale"}
                 </button>
-                
                 {editingId && (
                   <button
                     type="button"
@@ -176,133 +291,169 @@ const SaleRecorder = () => {
           </div>
         </div>
 
-        {/* Stats and Sales List */}
+        {/* Right section: stats & tabs */}
         <div className="lg:col-span-2">
-          {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Total Sales</p>
-                  <p className="text-2xl font-bold text-gray-900">{sales.length}</p>
-                </div>
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-blue-600">📊</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Total Quantity</p>
-                  <p className="text-2xl font-bold text-gray-900">{totalQuantity.toLocaleString()}</p>
-                </div>
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                  <span className="text-green-600">📦</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-                  <p className="text-2xl font-bold text-gray-900">₦{totalRevenue.toLocaleString()}</p>
-                </div>
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                  <span className="text-purple-600">💰</span>
+          {/* Summary cards */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            {[
+              { title: "Total Sales", value: sales.length, emoji: "📊" },
+              {
+                title: "Total Quantity",
+                value: totalQuantity.toLocaleString(),
+                emoji: "📦",
+              },
+              {
+                title: "Total Revenue",
+                value: `₦${totalRevenue.toLocaleString()}`,
+                emoji: "💰",
+              },
+            ].map((card, i) => (
+              <div
+                key={i}
+                className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">
+                      {card.title}
+                    </p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {card.value}
+                    </p>
+                  </div>
+                  <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                    <span>{card.emoji}</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
 
-          {/* Sales List */}
-          {loading ? (
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12 text-center">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="animate-spin h-8 w-8 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Loading sales...</h3>
-              <p className="text-gray-600">Please wait while we fetch your sales data.</p>
+          {/* Tabs */}
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+            <div className="border-b border-gray-200">
+              <nav className="flex">
+                {["list", "charts", "ai"].map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() =>
+                      setActiveTab(tab as "list" | "charts" | "ai")
+                    }
+                    className={`py-4 px-6 text-sm font-medium border-b-2 ${
+                      activeTab === tab
+                        ? "border-green-500 text-green-600"
+                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    }`}
+                  >
+                    {tab === "list"
+                      ? "Sales List"
+                      : tab === "charts"
+                      ? "Charts"
+                      : "AI Insights"}
+                  </button>
+                ))}
+              </nav>
             </div>
-          ) : sales.length > 0 ? (
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-800">Recent Sales</h3>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full">
+
+            <div className="p-6">
+              {loading ? (
+                <p>Loading sales...</p>
+              ) : sales.length === 0 ? (
+                <p>No sales recorded yet.</p>
+              ) : activeTab === "list" ? (
+                <table className="w-full text-sm">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Product
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Qty
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Price
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Total
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
-                      </th>
+                      {["Product", "Qty", "Price", "Total", "Actions"].map(
+                        (h) => (
+                          <th
+                            key={h}
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
+                            {h}
+                          </th>
+                        )
+                      )}
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
                     {sales.map((sale) => (
-                      <tr key={sale.id} className="hover:bg-gray-50 transition-colors duration-150">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">{sale.product}</div>
+                      <tr key={sale.id}>
+                        <td className="px-6 py-4">{sale.product}</td>
+                        <td className="px-6 py-4">{sale.quantity}</td>
+                        <td className="px-6 py-4">
+                          ₦{sale.price.toLocaleString()}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{sale.quantity.toLocaleString()}</div>
+                        <td className="px-6 py-4 font-semibold text-green-600">
+                          ₦{sale.total.toLocaleString()}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">₦{sale.price.toLocaleString()}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-semibold text-green-600">
-                            ₦{sale.total.toLocaleString()}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex space-x-3">
-                            <button
-                              onClick={() => handleEditSale(sale)}
-                              className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors duration-200"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => handleDeleteSale(sale.id)}
-                              className="text-red-600 hover:text-red-800 text-sm font-medium transition-colors duration-200"
-                            >
-                              Delete
-                            </button>
-                          </div>
+                        <td className="px-6 py-4 space-x-3">
+                          <button
+                            onClick={() => handleEditSale(sale)}
+                            className="text-blue-600 hover:text-blue-800"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeleteSale(sale.id)}
+                            className="text-red-600 hover:text-red-800"
+                          >
+                            Delete
+                          </button>
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
-              </div>
+              ) : activeTab === "charts" ? (
+                productRevenueData.length === 0 ? (
+                  <p>No product revenue data to display yet. Record a sale!</p>
+                ) : (
+                  <ResponsiveContainer width="100%" height={400}>
+                    <BarChart data={productRevenueData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="product" />
+                      <YAxis />
+                      <Tooltip
+                        formatter={(value: number) => [
+                          `₦${Number(value).toLocaleString()}`,
+                          "Revenue",
+                        ]}
+                      />
+                      <Legend />
+                      {/* UPDATED: Added Cell component for multi-color bars */}
+                      <Bar dataKey="revenue">
+                        {productRevenueData.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={COLORS[index % COLORS.length]}
+                          />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                )
+              ) : (
+                <div>
+                  {aiSummary ? (
+                    <p className="text-gray-700 whitespace-pre-wrap">
+                      {aiSummary}
+                    </p>
+                  ) : (
+                    <button
+                      onClick={generateAISummary}
+                      disabled={isGeneratingSummary || sales.length === 0}
+                      className="bg-blue-600 text-white px-6 py-3 rounded-lg"
+                    >
+                      {isGeneratingSummary
+                        ? "Analyzing..."
+                        : "Generate AI Summary"}
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
-          ) : (
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12 text-center">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">📝</span>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No sales recorded yet</h3>
-              <p className="text-gray-600">Start adding sales to see them appear here.</p>
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
