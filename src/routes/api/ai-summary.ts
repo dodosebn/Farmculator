@@ -65,7 +65,7 @@ ${Object.entries(salesData.products)
   )
   .join("\n")}
 
-Generate a short, clear summary (4–6 sentences) highlighting:
+Generate a short, clear summary (3-4 sentences) highlighting:
 1. Best-performing products and why (based on revenue/quantity)
 2. Overall sales performance and key metrics
 3. Observable patterns or trends (e.g., high average price, concentration of sales)

@@ -13,8 +13,11 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AccountRouteImport } from './routes/Account'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as InFarmAdvisorRouteImport } from './routes/in/farm-advisor'
 import { Route as In_layoutRouteImport } from './routes/in/__layout'
 import { Route as InDashboardRouteImport } from './routes/in/Dashboard'
+import { Route as ApiFarmChatRouteImport } from './routes/api/farm-chat'
+import { Route as ApiConversationRouteImport } from './routes/api/conversation'
 import { Route as ApiAiSummaryRouteImport } from './routes/api/ai-summary'
 import { Route as DemoStartServerFuncsRouteImport } from './routes/demo/start.server-funcs'
 import { Route as DemoStartApiRequestRouteImport } from './routes/demo/start.api-request'
@@ -45,6 +48,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InFarmAdvisorRoute = InFarmAdvisorRouteImport.update({
+  id: '/farm-advisor',
+  path: '/farm-advisor',
+  getParentRoute: () => InRoute,
+} as any)
 const In_layoutRoute = In_layoutRouteImport.update({
   id: '/__layout',
   getParentRoute: () => InRoute,
@@ -52,6 +60,16 @@ const In_layoutRoute = In_layoutRouteImport.update({
 const InDashboardRoute = InDashboardRouteImport.update({
   id: '/in/Dashboard',
   path: '/in/Dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiFarmChatRoute = ApiFarmChatRouteImport.update({
+  id: '/api/farm-chat',
+  path: '/api/farm-chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiConversationRoute = ApiConversationRouteImport.update({
+  id: '/api/conversation',
+  path: '/api/conversation',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAiSummaryRoute = ApiAiSummaryRouteImport.update({
@@ -119,8 +137,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/Account': typeof AccountRoute
   '/api/ai-summary': typeof ApiAiSummaryRoute
+  '/api/conversation': typeof ApiConversationRoute
+  '/api/farm-chat': typeof ApiFarmChatRoute
   '/in/Dashboard': typeof InDashboardRoute
   '/in': typeof In_layoutRoute
+  '/in/farm-advisor': typeof InFarmAdvisorRoute
   '/api/sales/add': typeof ApiSalesAddRoute
   '/api/sales/delete': typeof ApiSalesDeleteRoute
   '/api/sales/fetch': typeof ApiSalesFetchRoute
@@ -137,8 +158,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/Account': typeof AccountRoute
   '/api/ai-summary': typeof ApiAiSummaryRoute
+  '/api/conversation': typeof ApiConversationRoute
+  '/api/farm-chat': typeof ApiFarmChatRoute
   '/in/Dashboard': typeof InDashboardRoute
   '/in': typeof In_layoutRoute
+  '/in/farm-advisor': typeof InFarmAdvisorRoute
   '/api/sales/add': typeof ApiSalesAddRoute
   '/api/sales/delete': typeof ApiSalesDeleteRoute
   '/api/sales/fetch': typeof ApiSalesFetchRoute
@@ -156,9 +180,12 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/Account': typeof AccountRoute
   '/api/ai-summary': typeof ApiAiSummaryRoute
+  '/api/conversation': typeof ApiConversationRoute
+  '/api/farm-chat': typeof ApiFarmChatRoute
   '/in/Dashboard': typeof InDashboardRoute
   '/in': typeof InRouteWithChildren
   '/in/__layout': typeof In_layoutRoute
+  '/in/farm-advisor': typeof InFarmAdvisorRoute
   '/api/sales/add': typeof ApiSalesAddRoute
   '/api/sales/delete': typeof ApiSalesDeleteRoute
   '/api/sales/fetch': typeof ApiSalesFetchRoute
@@ -177,8 +204,11 @@ export interface FileRouteTypes {
     | '/'
     | '/Account'
     | '/api/ai-summary'
+    | '/api/conversation'
+    | '/api/farm-chat'
     | '/in/Dashboard'
     | '/in'
+    | '/in/farm-advisor'
     | '/api/sales/add'
     | '/api/sales/delete'
     | '/api/sales/fetch'
@@ -195,8 +225,11 @@ export interface FileRouteTypes {
     | '/'
     | '/Account'
     | '/api/ai-summary'
+    | '/api/conversation'
+    | '/api/farm-chat'
     | '/in/Dashboard'
     | '/in'
+    | '/in/farm-advisor'
     | '/api/sales/add'
     | '/api/sales/delete'
     | '/api/sales/fetch'
@@ -213,9 +246,12 @@ export interface FileRouteTypes {
     | '/'
     | '/Account'
     | '/api/ai-summary'
+    | '/api/conversation'
+    | '/api/farm-chat'
     | '/in/Dashboard'
     | '/in'
     | '/in/__layout'
+    | '/in/farm-advisor'
     | '/api/sales/add'
     | '/api/sales/delete'
     | '/api/sales/fetch'
@@ -233,6 +269,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRoute
   ApiAiSummaryRoute: typeof ApiAiSummaryRoute
+  ApiConversationRoute: typeof ApiConversationRoute
+  ApiFarmChatRoute: typeof ApiFarmChatRoute
   InDashboardRoute: typeof InDashboardRoute
   InRoute: typeof InRouteWithChildren
   ApiSalesAddRoute: typeof ApiSalesAddRoute
@@ -271,6 +309,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/in/farm-advisor': {
+      id: '/in/farm-advisor'
+      path: '/farm-advisor'
+      fullPath: '/in/farm-advisor'
+      preLoaderRoute: typeof InFarmAdvisorRouteImport
+      parentRoute: typeof InRoute
+    }
     '/in/__layout': {
       id: '/in/__layout'
       path: '/in'
@@ -283,6 +328,20 @@ declare module '@tanstack/react-router' {
       path: '/in/Dashboard'
       fullPath: '/in/Dashboard'
       preLoaderRoute: typeof InDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/farm-chat': {
+      id: '/api/farm-chat'
+      path: '/api/farm-chat'
+      fullPath: '/api/farm-chat'
+      preLoaderRoute: typeof ApiFarmChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/conversation': {
+      id: '/api/conversation'
+      path: '/api/conversation'
+      fullPath: '/api/conversation'
+      preLoaderRoute: typeof ApiConversationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/ai-summary': {
@@ -374,10 +433,12 @@ declare module '@tanstack/react-router' {
 
 interface InRouteChildren {
   In_layoutRoute: typeof In_layoutRoute
+  InFarmAdvisorRoute: typeof InFarmAdvisorRoute
 }
 
 const InRouteChildren: InRouteChildren = {
   In_layoutRoute: In_layoutRoute,
+  InFarmAdvisorRoute: InFarmAdvisorRoute,
 }
 
 const InRouteWithChildren = InRoute._addFileChildren(InRouteChildren)
@@ -386,6 +447,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRoute,
   ApiAiSummaryRoute: ApiAiSummaryRoute,
+  ApiConversationRoute: ApiConversationRoute,
+  ApiFarmChatRoute: ApiFarmChatRoute,
   InDashboardRoute: InDashboardRoute,
   InRoute: InRouteWithChildren,
   ApiSalesAddRoute: ApiSalesAddRoute,

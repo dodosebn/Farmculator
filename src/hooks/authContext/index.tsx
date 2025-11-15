@@ -1,9 +1,10 @@
-import { auth } from '@/auth/firebase';
-import { onAuthStateChanged, User } from 'firebase/auth';
+import { supabase } from '@/store/supabase';
+import { User, Session } from '@supabase/supabase-js';
 import { useContext, useEffect, useState, createContext, ReactNode } from 'react';
 
 interface AuthContextType {
   currentUser: User | null;
+  session: Session | null;
   userLoggedIn: boolean;
   loading: boolean;
 }
@@ -16,7 +17,7 @@ export const useAuth = () => {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-}
+};
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -24,29 +25,35 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unSubscribe = onAuthStateChanged(auth, initializeUser);
-    return unSubscribe;
-  }, []);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setCurrentUser(session?.user ?? null);
+      setUserLoggedIn(!!session);
+      setLoading(false);
+    });
 
-  const initializeUser = async (user: User | null) => {
-    if (user) {
-      setCurrentUser({ ...user });
-      setUserLoggedIn(true);
-    } else {
-      setCurrentUser(null);
-      setUserLoggedIn(false);
-    }
-    setLoading(false);
-  };
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setCurrentUser(session?.user ?? null);
+      setUserLoggedIn(!!session);
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const value: AuthContextType = {
     currentUser,
+    session,
     userLoggedIn,
-    loading
+    loading,
   };
 
   return (

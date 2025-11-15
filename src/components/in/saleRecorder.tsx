@@ -1,16 +1,13 @@
 import { useEffect, useState, ChangeEvent, FormEvent } from "react";
 import { useSalesStore } from "@/store/salesStore";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  Cell, // <-- ADDED: Cell for custom bar colors
-} from "recharts";
+
+import SaleForm from "./customs/saleForm";
+import SalesTable from "./customs/salesTable";
+import { IoStatsChartSharp } from "react-icons/io5";
+import { MdProductionQuantityLimits } from "react-icons/md";
+import { FaMoneyCheckAlt } from "react-icons/fa";
+import { FaSeedling } from "react-icons/fa6";
+import FarmAdvisor from "./farmAdivisor";
 
 const COLORS = [
   "#0088FE",
@@ -120,7 +117,7 @@ const SaleRecorder = () => {
       // Calculate top products
       const productEntries = Object.entries(productsBreakdown) as [
         string,
-        { totalRevenue: number; totalQuantity: number; count: number }
+        { totalRevenue: number; totalQuantity: number; count: number },
       ][];
 
       const topRevenueProduct = productEntries.reduce(
@@ -184,111 +181,20 @@ const SaleRecorder = () => {
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-3 mb-3">
           <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-            <span className="text-xl">🌾</span>
+            <span className="text-xl"><FaSeedling size={32} />
+</span>
           </div>
           <h1 className="text-3xl font-bold text-gray-800">Sales Tracker</h1>
         </div>
-        <p className="text-gray-600">Track your sales and revenue in real-time</p>
+        <p className="text-gray-600">
+          Track your sales and revenue in real-time
+        </p>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Form */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-            <h2 className="text-xl font-semibold mb-6 text-gray-800">
-              {editingId ? "Edit Sale" : "Add New Sale"}
-            </h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Product Name *
-                </label>
-                <input
-                  type="text"
-                  name="product"
-                  value={formData.product}
-                  onChange={handleChange}
-                  placeholder="e.g., Organic Wheat"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Quantity *
-                  </label>
-                  <input
-                    type="number"
-                    name="quantity"
-                    min="1"
-                    value={formData.quantity}
-                    onChange={handleChange}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Price (₦) *
-                  </label>
-                  <input
-                    type="number"
-                    name="price"
-                    min="0"
-                    step="0.01"
-                    value={formData.price}
-                    onChange={handleChange}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    required
-                  />
-                </div>
-              </div>
-
-              {formData.quantity && formData.price && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                  <p className="text-sm text-green-800 font-medium">
-                    Total: ₦
-                    {(
-                      Number(formData.quantity) * Number(formData.price)
-                    ).toLocaleString()}
-                  </p>
-                </div>
-              )}
-
-              <div className="flex gap-3">
-                <button
-                  type="submit"
-                  disabled={
-                    isSubmitting ||
-                    !formData.product ||
-                    !formData.quantity ||
-                    !formData.price
-                  }
-                  className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold transition-all duration-200"
-                >
-                  {isSubmitting
-                    ? editingId
-                      ? "Updating..."
-                      : "Adding..."
-                    : editingId
-                    ? "Update Sale"
-                    : "Add Sale"}
-                </button>
-                {editingId && (
-                  <button
-                    type="button"
-                    onClick={cancelEdit}
-                    className="px-4 bg-gray-500 text-white py-3 rounded-lg font-semibold hover:bg-gray-600 transition-all duration-200"
-                  >
-                    Cancel
-                  </button>
-                )}
-              </div>
-            </form>
-          </div>
+<SaleForm editingId={editingId} handleSubmit={handleSubmit} handleChange={handleChange} formData={formData} isSubmitting={isSubmitting} cancelEdit={cancelEdit} />
         </div>
 
         {/* Right section: stats & tabs */}
@@ -296,41 +202,46 @@ const SaleRecorder = () => {
           {/* Summary cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
             {[
-              { title: "Total Sales", value: sales.length, emoji: "📊" },
+              { title: "Total Sales", value: sales.length, emoji: <IoStatsChartSharp size={24} />
+ },
               {
                 title: "Total Quantity",
                 value: totalQuantity.toLocaleString(),
-                emoji: "📦",
+                emoji: <MdProductionQuantityLimits size={24} />
+,
               },
               {
                 title: "Total Revenue",
                 value: `₦${totalRevenue.toLocaleString()}`,
-                emoji: "💰",
+                emoji: <FaMoneyCheckAlt size={24}  />,
               },
             ].map((card, i) => (
               <div
                 key={i}
-                className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100"
+                className="bg-white  p-6 border border-gray-300"
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">
+                    <div className="flex items-center gap-5">
+                    <p className="text-sm whitespace-nowrap font-medium text-gray-600">
                       {card.title}
                     </p>
+                     <div className="bg-gray-100 rounded-full flex items-center justify-center">
+                    <span>{card.emoji}</span>
+                  </div>
+                  </div>
                     <p className="text-2xl font-bold text-gray-900">
                       {card.value}
                     </p>
                   </div>
-                  <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
-                    <span>{card.emoji}</span>
-                  </div>
+                 
                 </div>
               </div>
             ))}
           </div>
 
           {/* Tabs */}
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+          <div className="bg-white  border border-gray-300 overflow-hidden">
             <div className="border-b border-gray-200">
               <nav className="flex">
                 {["list", "charts", "ai"].map((tab) => (
@@ -348,111 +259,21 @@ const SaleRecorder = () => {
                     {tab === "list"
                       ? "Sales List"
                       : tab === "charts"
-                      ? "Charts"
-                      : "AI Insights"}
+                        ? "Charts"
+                        : "AI Insights"}
                   </button>
                 ))}
               </nav>
             </div>
 
-            <div className="p-6">
-              {loading ? (
-                <p>Loading sales...</p>
-              ) : sales.length === 0 ? (
-                <p>No sales recorded yet.</p>
-              ) : activeTab === "list" ? (
-                <table className="w-full text-sm">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      {["Product", "Qty", "Price", "Total", "Actions"].map(
-                        (h) => (
-                          <th
-                            key={h}
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                          >
-                            {h}
-                          </th>
-                        )
-                      )}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {sales.map((sale) => (
-                      <tr key={sale.id}>
-                        <td className="px-6 py-4">{sale.product}</td>
-                        <td className="px-6 py-4">{sale.quantity}</td>
-                        <td className="px-6 py-4">
-                          ₦{sale.price.toLocaleString()}
-                        </td>
-                        <td className="px-6 py-4 font-semibold text-green-600">
-                          ₦{sale.total.toLocaleString()}
-                        </td>
-                        <td className="px-6 py-4 space-x-3">
-                          <button
-                            onClick={() => handleEditSale(sale)}
-                            className="text-blue-600 hover:text-blue-800"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDeleteSale(sale.id)}
-                            className="text-red-600 hover:text-red-800"
-                          >
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : activeTab === "charts" ? (
-                productRevenueData.length === 0 ? (
-                  <p>No product revenue data to display yet. Record a sale!</p>
-                ) : (
-                  <ResponsiveContainer width="100%" height={400}>
-                    <BarChart data={productRevenueData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="product" />
-                      <YAxis />
-                      <Tooltip
-                        formatter={(value: number) => [
-                          `₦${Number(value).toLocaleString()}`,
-                          "Revenue",
-                        ]}
-                      />
-                      <Legend />
-                      {/* UPDATED: Added Cell component for multi-color bars */}
-                      <Bar dataKey="revenue">
-                        {productRevenueData.map((entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={COLORS[index % COLORS.length]}
-                          />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                )
-              ) : (
-                <div>
-                  {aiSummary ? (
-                    <p className="text-gray-700 whitespace-pre-wrap">
-                      {aiSummary}
-                    </p>
-                  ) : (
-                    <button
-                      onClick={generateAISummary}
-                      disabled={isGeneratingSummary || sales.length === 0}
-                      className="bg-blue-600 text-white px-6 py-3 rounded-lg"
-                    >
-                      {isGeneratingSummary
-                        ? "Analyzing..."
-                        : "Generate AI Summary"}
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
+        <SalesTable loading={loading}
+            sales={sales}
+            activeTab={activeTab}
+            productRevenueData={productRevenueData}
+            COLORS={COLORS} aiSummary={aiSummary}
+            generateAISummary={generateAISummary}
+            handleEditSale={handleEditSale}
+            handleDeleteSale={handleDeleteSale} isGeneratingSummary={false} />
           </div>
         </div>
       </div>
