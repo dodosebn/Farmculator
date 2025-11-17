@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, FormEvent } from "react";
 import { Send } from "lucide-react";
+import GenPage from "./sidebar/genPage";
 
 type MessageRole = "user" | "model" | "function";
 type ChatMessage = {
@@ -13,6 +14,16 @@ const FarmAdvisor = () => {
   const [input, setInput] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Disable body scroll when component mounts
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    
+    // Re-enable scroll when component unmounts
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -73,15 +84,16 @@ const FarmAdvisor = () => {
   };
 
   return (
+    <div>
+      <div>
+        <GenPage />
+      </div>
     <div className="flex flex-col h-screen bg-white">
-      {/* Header */}
-      {/* <div className="border-b border-gray-200 px-6 flex items-center justify-between bg-white">
-        <UseLogo />
-      </div> */}
-
-      {/* Chat / Empty State */}
-      <div className={`flex-1 overflow-y-hidden   ${messages.length === 0 ? 'flex justify-center items-center' : ''}`}>
-        <div className="max-w-3xl w-full px-4 py-8">
+      {/* Chat Container - This will have the only scroll */}
+      <div 
+        className={`flex-1 overflow-y-auto ${messages.length === 0 ? 'flex justify-center items-center' : ''}`}
+      >
+        <div className="max-w-3xl w-full mx-auto px-4 py-8">
           {/* Empty State */}
           {messages.length === 0 && (
             <div className="text-center space-y-4 w-full">
@@ -92,8 +104,7 @@ const FarmAdvisor = () => {
                 Ask me anything about farming, crops, livestock, or agricultural practices.
               </p>
 
-              {/* Centered Form */}
-              <form onSubmit={handleSubmit} className="relative mt-6 w-full">
+              <form onSubmit={handleSubmit} className="relative mt-6 w-full max-w-2xl mx-auto">
                 <textarea
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
@@ -104,11 +115,10 @@ const FarmAdvisor = () => {
                     }
                   }}
                   placeholder="Ask about planting seasons, crop rotation, pest control, irrigation..."
-                  className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl
-                   resize-none focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 placeholder-gray-400"
-                  rows={1}
+                  className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 placeholder-gray-400"
+                  rows={3}
                   disabled={isGenerating}
-                  style={{ minHeight: "52px", maxHeight: "200px" }}
+                  style={{ minHeight: "120px" }}
                 />
                 <button
                   type="submit"
@@ -123,19 +133,26 @@ const FarmAdvisor = () => {
 
           {/* Messages */}
           {messages.length > 0 && (
-            <div className="space-y-6">
+            <div className="space-y-8 pb-4">
               {messages.map((msg, index) => (
-                <div key={index} className="flex gap-4">
-              
-                  <div className={`flex-1 ${msg.role === "user" ? "md:ml-96 border-green-900 border-b-4" : ""}`}>
-                    {msg.role === "user" && (
-                      <div className="text-xl font-bold text-gray-900 mb-1">You</div>
-                    )}
-                    {msg.role === "model" && (
-                      <div className="text-xl font-bold text-gray-900 mb-1">FarmCulator</div>
-                    )}
+                <div 
+                  key={index} 
+                  className={`flex gap-4 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                >
+                  <div 
+                    className={`max-w-[80%] ${
+                      msg.role === "user" 
+                        ? "bg-green-50 border border-green-200 rounded-2xl rounded-tr-sm px-4 py-3" 
+                        : "bg-gray-50 border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3"
+                    }`}
+                  >
+                    <div className={`text-sm font-semibold mb-2 ${
+                      msg.role === "user" ? "text-green-800" : "text-gray-800"
+                    }`}>
+                      {msg.role === "user" ? "You" : "FarmCulator"}
+                    </div>
                     
-                    <div className={`prose prose-sm max-w-none ${msg.isGenerating ? "text-gray-400" : "text-gray-800"}`}>
+                    <div className={`text-sm ${msg.isGenerating ? "text-gray-500" : "text-gray-700"}`}>
                       {msg.isGenerating ? (
                         <div className="flex items-center gap-1">
                           <span className="inline-block w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></span>
@@ -143,7 +160,7 @@ const FarmAdvisor = () => {
                           <span className="inline-block w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></span>
                         </div>
                       ) : (
-                        <p className="whitespace-pre-wrap leading-7">{msg.text}</p>
+                        <div className="whitespace-pre-wrap leading-6">{msg.text}</div>
                       )}
                     </div>
                   </div>
@@ -170,11 +187,10 @@ const FarmAdvisor = () => {
                   }
                 }}
                 placeholder="Ask about planting seasons, crop rotation, pest control, irrigation..."
-                className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl resize-none
-                 focus:outline-none focus:ring-2 focus:ring-green-700 focus:border-transparent text-gray-900 placeholder-gray-400"
+                className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-green-700 focus:border-transparent text-gray-900 placeholder-gray-400"
                 rows={1}
                 disabled={isGenerating}
-                style={{ minHeight: "52px", maxHeight: "200px" }}
+                style={{ minHeight: "52px" }}
               />
               <button
                 type="submit"
@@ -184,10 +200,10 @@ const FarmAdvisor = () => {
                 <Send className="w-5 h-5" />
               </button>
             </form>
-      
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 };

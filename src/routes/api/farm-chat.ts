@@ -24,7 +24,6 @@ export const Route = createFileRoute("/api/farm-chat")({
             );
           }
 
-          // SYSTEM INSTRUCTION
           const systemInstruction = `
             You are an expert Farm Advisor. Provide concise agricultural help,
             planting guidance, pest control tips, soil insights, and answer farming
