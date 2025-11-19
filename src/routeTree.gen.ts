@@ -13,6 +13,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AccountRouteImport } from './routes/Account'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as InProfileRouteImport } from './routes/in/profile'
 import { Route as InFarmAdvisorRouteImport } from './routes/in/farm-advisor'
 import { Route as In_layoutRouteImport } from './routes/in/__layout'
 import { Route as InDashboardRouteImport } from './routes/in/Dashboard'
@@ -47,6 +48,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const InProfileRoute = InProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => InRoute,
 } as any)
 const InFarmAdvisorRoute = InFarmAdvisorRouteImport.update({
   id: '/farm-advisor',
@@ -142,6 +148,7 @@ export interface FileRoutesByFullPath {
   '/in/Dashboard': typeof InDashboardRoute
   '/in': typeof In_layoutRoute
   '/in/farm-advisor': typeof InFarmAdvisorRoute
+  '/in/profile': typeof InProfileRoute
   '/api/sales/add': typeof ApiSalesAddRoute
   '/api/sales/delete': typeof ApiSalesDeleteRoute
   '/api/sales/fetch': typeof ApiSalesFetchRoute
@@ -163,6 +170,7 @@ export interface FileRoutesByTo {
   '/in/Dashboard': typeof InDashboardRoute
   '/in': typeof In_layoutRoute
   '/in/farm-advisor': typeof InFarmAdvisorRoute
+  '/in/profile': typeof InProfileRoute
   '/api/sales/add': typeof ApiSalesAddRoute
   '/api/sales/delete': typeof ApiSalesDeleteRoute
   '/api/sales/fetch': typeof ApiSalesFetchRoute
@@ -186,6 +194,7 @@ export interface FileRoutesById {
   '/in': typeof InRouteWithChildren
   '/in/__layout': typeof In_layoutRoute
   '/in/farm-advisor': typeof InFarmAdvisorRoute
+  '/in/profile': typeof InProfileRoute
   '/api/sales/add': typeof ApiSalesAddRoute
   '/api/sales/delete': typeof ApiSalesDeleteRoute
   '/api/sales/fetch': typeof ApiSalesFetchRoute
@@ -209,6 +218,7 @@ export interface FileRouteTypes {
     | '/in/Dashboard'
     | '/in'
     | '/in/farm-advisor'
+    | '/in/profile'
     | '/api/sales/add'
     | '/api/sales/delete'
     | '/api/sales/fetch'
@@ -230,6 +240,7 @@ export interface FileRouteTypes {
     | '/in/Dashboard'
     | '/in'
     | '/in/farm-advisor'
+    | '/in/profile'
     | '/api/sales/add'
     | '/api/sales/delete'
     | '/api/sales/fetch'
@@ -252,6 +263,7 @@ export interface FileRouteTypes {
     | '/in'
     | '/in/__layout'
     | '/in/farm-advisor'
+    | '/in/profile'
     | '/api/sales/add'
     | '/api/sales/delete'
     | '/api/sales/fetch'
@@ -308,6 +320,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/in/profile': {
+      id: '/in/profile'
+      path: '/profile'
+      fullPath: '/in/profile'
+      preLoaderRoute: typeof InProfileRouteImport
+      parentRoute: typeof InRoute
     }
     '/in/farm-advisor': {
       id: '/in/farm-advisor'
@@ -434,11 +453,13 @@ declare module '@tanstack/react-router' {
 interface InRouteChildren {
   In_layoutRoute: typeof In_layoutRoute
   InFarmAdvisorRoute: typeof InFarmAdvisorRoute
+  InProfileRoute: typeof InProfileRoute
 }
 
 const InRouteChildren: InRouteChildren = {
   In_layoutRoute: In_layoutRoute,
   InFarmAdvisorRoute: InFarmAdvisorRoute,
+  InProfileRoute: InProfileRoute,
 }
 
 const InRouteWithChildren = InRoute._addFileChildren(InRouteChildren)

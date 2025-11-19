@@ -42,25 +42,7 @@ const IntroSentence = () => {
             </p>
           </div>
         </div>
-        
-            <div
-          className="absolute md:top-1/2 bottom-64 right-8 -translate-y-1/2 bg-white/80 
-          backdrop-blur-sm rounded-full p-3 flex flex-col gap-2"
-        >
-          {ImgFlippers.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              className={`w-4 h-4 rounded-full transition-all cursor-pointer
-              ${
-                currentIndex === index
-                  ? "bg-green-600 scale-110"
-                  : "bg-gray-400 hover:bg-gray-600"
-              }`}
-              aria-label={`Go to image ${index + 1}`}
-            />
-          ))}
-        </div>
+  
       </div>
     </div>
   );

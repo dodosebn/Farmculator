@@ -40,7 +40,6 @@ const NavBar = () => {
           ))}
         </ul>
 
-        {/* Mobile Menu Button */}
         <button
           className="md:hidden p-2 text-[#778871] hover:text-white transition-colors"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -68,7 +67,7 @@ const NavBar = () => {
 
       {isMenuOpen && (
         <div className="md:hidden absolute top-full left-0 right-0 bg-[#0a1905]
-         border-t border-[#1a2a15] z-[9999]">
+         border-t border-[#1a2a15] z-9999">
           <ul className="flex mx-auto justify-center text-center flex-col py-4">
             {navLinks.map((link, index) => (
               <li

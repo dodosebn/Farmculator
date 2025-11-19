@@ -35,7 +35,7 @@ const AuthUI = () => {
           email,
           password,
         });
-        
+
         if (error) throw error;
         toast.success("Account created successfully 🎉");
       } else {
@@ -43,7 +43,7 @@ const AuthUI = () => {
           email,
           password,
         });
-        
+
         if (error) throw error;
         toast.success("Signed in successfully 🚀");
       }
@@ -65,12 +65,12 @@ const AuthUI = () => {
 
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+        provider: "google",
         options: {
           redirectTo: `${window.location.origin}/in/Dashboard`,
         },
       });
-      
+
       if (error) throw error;
       toast.success("Google sign-in successful ✔");
     } catch (err: any) {
@@ -150,7 +150,8 @@ const AuthUI = () => {
                   placeholder="youremail@gmail.com"
                   required
                   className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-200 
-                  rounded-xl focus:border-purple-500 focus:bg-white focus:outline-none transition-all duration-200"
+                   focus:border-green-500 focus:bg-white focus:outline-none
+                   transition-all duration-200"
                 />
               </div>
             </div>
@@ -167,7 +168,9 @@ const AuthUI = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full pl-12 pr-12 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:bg-white focus:outline-none transition-all duration-200"
+                  className="w-full pl-12 pr-12 py-3.5 bg-gray-50 border-2
+                   border-gray-200 focus:border-green-500 focus:bg-white 
+                   focus:outline-none transition-all duration-200"
                 />
                 <button
                   type="button"
@@ -189,14 +192,17 @@ const AuthUI = () => {
                   Confirm Password
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5
+                   text-gray-400" />
                   <input
                     type={showPassword ? "text" : "password"}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:bg-white focus:outline-none transition-all duration-200"
+                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2
+                     border-gray-200 focus:border-green-500
+                      focus:bg-white focus:outline-none transition-all duration-200"
                   />
                 </div>
               </div>
