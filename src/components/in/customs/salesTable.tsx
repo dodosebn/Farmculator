@@ -27,7 +27,7 @@ export interface ProductRevenue {
 interface SalesTableProps {
   loading: boolean;
   sales: Sale[];
-  activeTab: "list" | "charts" | "ai";   // 🔥 FIXED TYPE
+  activeTab: "list" | "charts" | "ai";
 
   productRevenueData: ProductRevenue[];
 
@@ -61,48 +61,53 @@ const SalesTable: React.FC<SalesTableProps> = ({
       ) : sales.length === 0 ? (
         <p>No sales recorded yet.</p>
       ) : activeTab === "list" ? (
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50">
-            <tr>
-              {["Product", "Qty", "Price", "Total", "Actions"].map((h) => (
-                <th
-                  key={h}
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-
-          <tbody className="divide-y divide-gray-200">
-            {sales.map((sale) => (
-              <tr key={sale.id}>
-                <td className="px-6 py-4">{sale.product}</td>
-                <td className="px-6 py-4">{sale.quantity}</td>
-                <td className="px-6 py-4">₦{sale.price.toLocaleString()}</td>
-                <td className="px-6 py-4 font-semibold text-green-600">
-                  ₦{sale.total.toLocaleString()}
-                </td>
-                <td className="px-6 py-4 space-x-3">
-                  <button
-                    onClick={() => handleEditSale(sale)}
-                    className="text-blue-600 hover:text-blue-800"
+        /* ⭐ Responsive wrapper added here */
+        <div className="overflow-x-auto w-full">
+          <table className="min-w-max w-full text-sm">
+            <thead className="bg-gray-50">
+              <tr>
+                {["Product", "Qty", "Price", "Total", "Actions"].map((h) => (
+                  <th
+                    key={h}
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Edit
-                  </button>
-
-                  <button
-                    onClick={() => handleDeleteSale(sale.id)}
-                    className="text-red-600 hover:text-red-800"
-                  >
-                    Delete
-                  </button>
-                </td>
+                    {h}
+                  </th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody className="divide-y divide-gray-200">
+              {sales.map((sale) => (
+                <tr key={sale.id} className="whitespace-nowrap">
+                  <td className="px-6 py-4">{sale.product}</td>
+                  <td className="px-6 py-4">{sale.quantity}</td>
+                  <td className="px-6 py-4">
+                    ₦{sale.price.toLocaleString()}
+                  </td>
+                  <td className="px-6 py-4 font-semibold text-green-600">
+                    ₦{sale.total.toLocaleString()}
+                  </td>
+                  <td className="px-6 py-4 space-x-3">
+                    <button
+                      onClick={() => handleEditSale(sale)}
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      onClick={() => handleDeleteSale(sale.id)}
+                      className="text-red-600 hover:text-red-800"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : activeTab === "charts" ? (
         productRevenueData.length === 0 ? (
           <p>No product revenue data to display yet. Record a sale!</p>

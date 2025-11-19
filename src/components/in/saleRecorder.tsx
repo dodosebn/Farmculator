@@ -114,7 +114,6 @@ const SaleRecorder = () => {
         return acc;
       }, {});
 
-      // Calculate top products
       const productEntries = Object.entries(productsBreakdown) as [
         string,
         { totalRevenue: number; totalQuantity: number; count: number },
@@ -140,8 +139,8 @@ const SaleRecorder = () => {
         averagePrice: totalQuantity > 0 ? totalRevenue / totalQuantity : 0,
         highestSale: Math.max(...sales.map((s) => s.total)),
         lowestSale: Math.min(...sales.map((s) => s.total)),
-        topRevenueProduct, // <-- ADDED
-        topQuantityProduct, // <-- ADDED
+        topRevenueProduct,
+        topQuantityProduct, 
       };
 
       const response = await fetch("/api/ai-summary", {
@@ -175,110 +174,96 @@ const SaleRecorder = () => {
     revenue: Number(revenue),
   }));
 
-  return (
-    <div className="max-w-6xl mx-auto p-6">
-      {/* Header */}
-      <div className="text-center mb-8">
-        <div className="flex items-center justify-center gap-3 mb-3">
-          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-            <span className="text-xl"><FaSeedling size={32} />
-</span>
-          </div>
-          <h1 className="text-3xl font-bold text-gray-800">Sales Tracker</h1>
+return (
+  <div className="max-w-6xl mx-auto p-4 sm:p-6">
+    <div className="text-center mb-6 sm:mb-8">
+      <div className="flex items-center justify-center gap-3 mb-3">
+        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+          <span className="text-xl"><FaSeedling size={32} /></span>
         </div>
-        <p className="text-gray-600">
-          Track your sales and revenue in real-time
-        </p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Sales Tracker</h1>
+      </div>
+      <p className="text-gray-600 text-sm sm:text-base">
+        Track your sales and revenue in real-time
+      </p>
+    </div>
+
+    {/* 1. Main responsive grid */}
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+      
+      {/* Left form */}
+      <div className="md:col-span-1">
+        <SaleForm
+          editingId={editingId}
+          handleSubmit={handleSubmit}
+          handleChange={handleChange}
+          formData={formData}
+          isSubmitting={isSubmitting}
+          cancelEdit={cancelEdit}
+        />
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-8">
-        {/* Form */}
-        <div className="lg:col-span-1">
-<SaleForm editingId={editingId} handleSubmit={handleSubmit} handleChange={handleChange} formData={formData} isSubmitting={isSubmitting} cancelEdit={cancelEdit} />
-        </div>
+      {/* Right section */}
+      <div className="md:col-span-2 mt-6 md:mt-0">
 
-        {/* Right section: stats & tabs */}
-        <div className="lg:col-span-2">
-          {/* Summary cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            {[
-              { title: "Total Sales", value: sales.length, emoji: <IoStatsChartSharp size={24} />
- },
-              {
-                title: "Total Quantity",
-                value: totalQuantity.toLocaleString(),
-                emoji: <MdProductionQuantityLimits size={24} />
-,
-              },
-              {
-                title: "Total Revenue",
-                value: `₦${totalRevenue.toLocaleString()}`,
-                emoji: <FaMoneyCheckAlt size={24}  />,
-              },
-            ].map((card, i) => (
-              <div
-                key={i}
-                className="bg-white  p-6 border border-gray-300"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="flex items-center gap-5">
-                    <p className="text-sm whitespace-nowrap font-medium text-gray-600">
-                      {card.title}
-                    </p>
-                     <div className="bg-gray-100 rounded-full flex items-center justify-center">
-                    <span>{card.emoji}</span>
+        {/* 2. Responsive summary cards */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-8">
+          {[
+            { title: "Total Sales", value: sales.length, emoji: <IoStatsChartSharp size={24} /> },
+            { title: "Total Quantity", value: totalQuantity.toLocaleString(), emoji: <MdProductionQuantityLimits size={24} /> },
+            { title: "Total Revenue", value: `₦${totalRevenue.toLocaleString()}`, emoji: <FaMoneyCheckAlt size={24} /> },
+          ].map((card, i) => (
+            <div key={i} className="bg-white p-4 sm:p-6 border border-gray-300">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-4">
+                    <p className="text-xs sm:text-sm font-medium text-gray-600">{card.title}</p>
+                    <div className="bg-gray-100 rounded-full p-1">{card.emoji}</div>
                   </div>
-                  </div>
-                    <p className="text-2xl font-bold text-gray-900">
-                      {card.value}
-                    </p>
-                  </div>
-                 
+                  <p className="text-xl sm:text-2xl font-bold text-gray-900">{card.value}</p>
                 </div>
               </div>
-            ))}
+            </div>
+          ))}
+        </div>
+
+        {/* 3. Scrollable mobile tabs */}
+        <div className="bg-white border border-gray-300 overflow-hidden">
+          <div className="border-b border-gray-200">
+            <nav className="flex overflow-x-auto whitespace-nowrap no-scrollbar">
+              {["list", "charts", "ai"].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab as any)}
+                  className={`py-3 px-5 text-sm font-medium border-b-2 flex-shrink-0 ${
+                    activeTab === tab
+                      ? "border-green-500 text-green-600"
+                      : "border-transparent text-gray-500"
+                  }`}
+                >
+                  {tab === "list" ? "Sales List" : tab === "charts" ? "Charts" : "AI Insights"}
+                </button>
+              ))}
+            </nav>
           </div>
 
-          {/* Tabs */}
-          <div className="bg-white  border border-gray-300 overflow-hidden">
-            <div className="border-b border-gray-200">
-              <nav className="flex">
-                {["list", "charts", "ai"].map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() =>
-                      setActiveTab(tab as "list" | "charts" | "ai")
-                    }
-                    className={`py-4 px-6 text-sm font-medium border-b-2 ${
-                      activeTab === tab
-                        ? "border-green-500 text-green-600"
-                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                    }`}
-                  >
-                    {tab === "list"
-                      ? "Sales List"
-                      : tab === "charts"
-                        ? "Charts"
-                        : "AI Insights"}
-                  </button>
-                ))}
-              </nav>
-            </div>
-
-        <SalesTable loading={loading}
+          <SalesTable
+            loading={loading}
             sales={sales}
             activeTab={activeTab}
             productRevenueData={productRevenueData}
-            COLORS={COLORS} aiSummary={aiSummary}
+            COLORS={COLORS}
+            aiSummary={aiSummary}
             generateAISummary={generateAISummary}
             handleEditSale={handleEditSale}
-            handleDeleteSale={handleDeleteSale} isGeneratingSummary={false} />
-          </div>
+            handleDeleteSale={handleDeleteSale}
+            isGeneratingSummary={false}
+          />
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 export default SaleRecorder;
