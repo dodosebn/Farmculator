@@ -107,7 +107,6 @@ const AuthUI = () => {
             </div>
           )}
 
-          {/* Google Sign-In Button - Now Active */}
           <button
             onClick={handleGoogleSignIn}
             disabled={loading}

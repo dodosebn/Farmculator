@@ -1,19 +1,53 @@
-import { supabase } from '@/store/supabase'
 import { createFileRoute } from '@tanstack/react-router'
 import { json } from '@tanstack/react-start'
+import { supabase } from '@/store/supabase';
 
-export const Route = createFileRoute(('/api/sales/fetch') as any)({
+export const Route = createFileRoute('/api/sales/fetch')({
   server: {
     handlers: {
-      GET: async () => {
+      PATCH: async ({ request }) => {
         try {
+          const body = (await request.json()) as {
+            id?: number | string
+            updates?: {
+              product?: string
+              quantity?: number
+              price?: number
+              [key: string]: any
+            }
+          }
+
+          const { id, updates } = body
+
+          if (!id || !updates) {
+            return json(
+              { success: false, message: 'Missing fields' },
+              { status: 400 }
+            )
+          }
+
+          // Auth
+          const { data: userData, error: userErr } = await supabase.auth.getUser()
+          if (userErr || !userData?.user) {
+            return json({ success: false, message: 'Not authenticated' }, { status: 401 })
+          }
+          const user = userData.user
+
+          // Auto-calc total if both provided
+          if (typeof updates.quantity === 'number' && typeof updates.price === 'number') {
+            updates.total = Number(updates.quantity) * Number(updates.price)
+          }
+
           const { data, error } = await supabase
             .from('sales')
-            .select('*')
-            .order('created_at', { ascending: false })
+            .update(updates)
+            .eq('id', id)
+            .eq('user_id', user.id)
+            .select()
+            .single()
 
           if (error) {
-            console.error('Supabase fetch error:', error)
+            console.error('Supabase update error:', error)
             return json(
               { success: false, message: error.message },
               { status: 500 }
@@ -21,7 +55,7 @@ export const Route = createFileRoute(('/api/sales/fetch') as any)({
           }
 
           return json(
-            { success: true, sales: data },
+            { success: true, sale: data },
             { status: 200 }
           )
         } catch (err) {
