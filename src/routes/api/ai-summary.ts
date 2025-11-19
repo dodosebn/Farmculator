@@ -7,7 +7,7 @@ if (!apiKey) throw new Error("Missing Google API Key");
 
 const genAI = new GoogleGenerativeAI(apiKey);
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-export const Route = createFileRoute(("/api/ai-summary") as any)({
+export const Route = createFileRoute("/api/ai-summary" as any)({
   server: {
     handlers: {
       POST: async ({ request }) => {
@@ -20,8 +20,8 @@ export const Route = createFileRoute(("/api/ai-summary") as any)({
               averagePrice: number;
               highestSale: number;
               lowestSale: number;
-              topRevenueProduct: string; 
-              topQuantityProduct: string; 
+              topRevenueProduct: string;
+              topQuantityProduct: string;
               products: Record<
                 string,
                 { totalRevenue: number; totalQuantity: number; count: number }
@@ -49,11 +49,11 @@ Sales Overview:
 - Highest Sale: ₦${salesData.highestSale.toLocaleString()}
 - Lowest Sale: ₦${salesData.lowestSale.toLocaleString()}
 - **Top Revenue Product**: ${
-              salesData.topRevenueProduct || "N/A"
-            } (Highest total earnings)
+            salesData.topRevenueProduct || "N/A"
+          } (Highest total earnings)
 - **Top Quantity Product**: ${
-              salesData.topQuantityProduct || "N/A"
-            } (Most units sold)
+            salesData.topQuantityProduct || "N/A"
+          } (Most units sold)
 
 Product Breakdown:
 ${Object.entries(salesData.products)

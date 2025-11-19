@@ -8,8 +8,8 @@ const NavBar = () => {
 
   const navLinks = [
     { name: "Home", path: "/" },
-    { name: "About", path: "/About" },
-    { name: "Services", path: "/Services" },
+    { name: "About", path: "/" },
+    { name: "Services", path: "/" },
     { name: "SignIn", path: "/Account" },
   ];
 
@@ -21,12 +21,13 @@ const NavBar = () => {
   return (
     <nav className="relative bg-[#0a1905] px-4 sm:px-6 py-4 shadow-md">
       <div className="flex items-center gap-20 mx-auto">
-        {/* Logo */}
-        <div className="shrink-0 cursor-pointer" onClick={() => handleRoute("/")}>
+        <div
+          className="shrink-0 cursor-pointer"
+          onClick={() => handleRoute("/")}
+        >
           <UseLogo />
         </div>
 
-        {/* Desktop Navigation Links */}
         <ul className="hidden md:flex items-center gap-6 lg:gap-8">
           {navLinks.map((link, index) => (
             <li
@@ -45,7 +46,12 @@ const NavBar = () => {
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label="Toggle menu"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             {isMenuOpen ? (
               <path
                 strokeLinecap="round"
@@ -66,8 +72,10 @@ const NavBar = () => {
       </div>
 
       {isMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-[#0a1905]
-         border-t border-[#1a2a15] z-9999">
+        <div
+          className="md:hidden absolute top-full left-0 right-0 bg-[#0a1905]
+         border-t border-[#1a2a15] z-9999"
+        >
           <ul className="flex mx-auto justify-center text-center flex-col py-4">
             {navLinks.map((link, index) => (
               <li

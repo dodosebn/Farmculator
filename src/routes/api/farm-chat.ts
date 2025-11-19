@@ -38,7 +38,6 @@ export const Route = createFileRoute("/api/farm-chat")({
           const reply = response.response.text().trim();
 
           return json({ response: reply });
-
         } catch (error) {
           console.error("AI Farm Advisor error:", error);
           return json(

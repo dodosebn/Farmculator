@@ -68,11 +68,14 @@ const AuthUI = () => {
         provider: "google",
         options: {
           redirectTo: `${window.location.origin}/in/Dashboard`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
         },
       });
 
       if (error) throw error;
-      toast.success("Google sign-in successful ✔");
     } catch (err: any) {
       setError(err.message || "Google sign-in failed");
       toast.error(err.message || "Google sign-in failed ❌");
@@ -104,7 +107,8 @@ const AuthUI = () => {
             </div>
           )}
 
-          {/* <button
+          {/* Google Sign-In Button - Now Active */}
+          <button
             onClick={handleGoogleSignIn}
             disabled={loading}
             className="w-full bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-700 font-semibold py-3.5 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-3 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
@@ -128,7 +132,7 @@ const AuthUI = () => {
               />
             </svg>
             Continue with Google
-          </button> */}
+          </button>
 
           <div className="flex items-center gap-4">
             <div className="flex-1 h-px bg-gray-300"></div>
@@ -241,10 +245,6 @@ const AuthUI = () => {
             </p>
           </div>
         </div>
-
-        <p className="text-center text-white/80 text-sm mt-6">
-          Protected by Supabase Authentication
-        </p>
       </div>
     </div>
   );

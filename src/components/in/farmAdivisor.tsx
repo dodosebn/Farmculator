@@ -104,9 +104,9 @@ const FarmAdvisor = () => {
 
   return (
     <>
-      {/* DESKTOP LAYOUT */}
+      {/* DESKTOP */}
       <main className="hidden md:block">
-        <div className="flex h-screen bg-gradient-to-br from-gray-50 to-green-50/30 overflow-hidden">
+        <div className="flex h-screen bg-linear-to-br from-gray-50 to-green-50/30 overflow-hidden">
           {isSidebarOpen && (
             <div className="w-80 border-r border-gray-200 bg-white/95 backdrop-blur-sm shadow-sm">
               <GenPage onToggleSidebar={toggleSidebar} />
@@ -139,10 +139,9 @@ const FarmAdvisor = () => {
                   isSidebarOpen ? "max-w-4xl" : "max-w-6xl"
                 }`}
               >
-                {/* EMPTY STATE */}
                 {messages.length === 0 && (
                   <div className="text-center space-y-6 w-full h-full flex flex-col justify-center items-center px-4">
-                 <UseLogo />
+                 {/* <UseLogo /> */}
                     <p className="text-gray-600 text-lg max-w-md leading-relaxed">
                       Your intelligent farming assistant. Ask me anything about
                       crops and agricultural practices.
@@ -160,7 +159,7 @@ const FarmAdvisor = () => {
                         }`}
                       >
                         {msg.role === "model" && (
-                          <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-md mt-1">
+                          <div className="shrink-0 w-8 h-8 bg-linear-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-md mt-1">
                             <Bot className="w-4 h-4 text-white" />
                           </div>
                         )}
@@ -272,7 +271,7 @@ const FarmAdvisor = () => {
         </div>
       </main>
 
-      {/* MOBILE LAYOUT */}
+      {/* MOBILE */}
       <div className="block md:hidden relative">
         <div
           className={`fixed left-0 top-0 h-full w-80 bg-white/95 backdrop-blur-sm border-r border-gray-200 shadow-xl transform transition-transform duration-300 z-50
@@ -296,7 +295,7 @@ const FarmAdvisor = () => {
           <FiSidebar size={20} className="text-green-700" />
         </button>
 
-        <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 to-green-50/30 pt-20 pb-32">
+        <div className="min-h-screen flex flex-col bg-linear-to-br from-gray-50 to-green-50/30 pt-20 pb-32">
         
 
           <div className="flex-1 overflow-y-auto px-4 space-y-4 mb-4">
@@ -317,7 +316,7 @@ const FarmAdvisor = () => {
                 }`}
               >
                 {msg.role === "model" && (
-                  <div className="flex-shrink-0 w-6 h-6 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-md mt-1">
+                  <div className="shrink-0 w-6 h-6 bg-linear-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-md mt-1">
                     <Bot className="w-3 h-3 text-white" />
                   </div>
                 )}
@@ -325,7 +324,7 @@ const FarmAdvisor = () => {
                 <div
                   className={`max-w-[85%] ${
                     msg.role === "user"
-                      ? "bg-gradient-to-br from-green-500 to-green-600 text-white rounded-2xl rounded-br-md px-4 py-3 shadow-md"
+                      ? "bg-linear-to-br from-green-500 to-green-600 text-white rounded-2xl rounded-br-md px-4 py-3 shadow-md"
                       : "bg-white border border-gray-200 rounded-2xl rounded-bl-md px-4 py-3 shadow-sm"
                   }`}
                 >
@@ -359,7 +358,7 @@ const FarmAdvisor = () => {
                 </div>
 
                 {msg.role === "user" && (
-                  <div className="flex-shrink-0 w-6 h-6 bg-gradient-to-br from-gray-600 to-gray-700 rounded-full flex items-center justify-center shadow-md mt-1">
+                  <div className="shrink-0 w-6 h-6 bg-linear-to-br from-gray-600 to-gray-700 rounded-full flex items-center justify-center shadow-md mt-1">
                     <div className="text-white text-xs font-medium flex items-center justify-center">
                       {isLoading ? (
                         <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -374,7 +373,8 @@ const FarmAdvisor = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          <div className="fixed bottom-0 left-0 right-0 border-t border-gray-200 bg-white/90 backdrop-blur-md shadow-lg p-4">
+          <div className="fixed bottom-0 left-0 right-0 border-t border-gray-200
+           bg-white/90 backdrop-blur-md shadow-lg p-4">
             <form onSubmit={handleSubmit} className="relative">
               <div className="relative">
                 <textarea
@@ -396,7 +396,7 @@ const FarmAdvisor = () => {
                 <button
                   type="submit"
                   disabled={!input.trim() || isGenerating}
-                  className="absolute right-2 bottom-2 p-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shadow-md"
+                  className="absolute right-2 bottom-2 p-2 bg-linear-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shadow-md"
                 >
                   {isGenerating ? (
                     <Sparkles className="w-4 h-4 animate-pulse" />
