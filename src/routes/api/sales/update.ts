@@ -1,40 +1,60 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { json } from '@tanstack/react-start'
 import { supabase } from '@/store/supabase';
-
 export const Route = createFileRoute('/api/sales/update')({
   server: {
     handlers: {
-      DELETE: async ({ request }) => {
+      PATCH: async ({ request }) => {
         try {
-          const body = (await request.json()) as { id?: number | string }
-
-          if (!body?.id) {
-            return json({ success: false, message: 'Missing id' }, { status: 400 })
+          const body = await request.json() as {
+            id?: string
+            updates?: {
+              product?: string
+              quantity?: number
+              price?: number
+              [key: string]: any
+            }
           }
 
-          // Auth
-          const { data: userData, error: userErr } = await supabase.auth.getUser()
-          if (userErr || !userData?.user) {
-            return json({ success: false, message: 'Not authenticated' }, { status: 401 })
-          }
-          const user = userData.user
+          const { id, updates } = body
 
-          const { error } = await supabase
+          if (!id || !updates) {
+            return json(
+              { success: false, message: 'Missing fields' },
+              { status: 400 }
+            )
+          }
+
+          // Auto-calculate total if both quantity and price are provided
+          if (updates.quantity && updates.price) {
+            updates.total = Number(updates.quantity) * Number(updates.price)
+          }
+
+          const { data, error } = await supabase
             .from('sales')
-            .delete()
-            .eq('id', body.id)
-            .eq('user_id', user.id)
+            .update(updates)
+            .eq('id', id)
+            .select()
+            .single()
 
           if (error) {
-            console.error('Supabase delete error:', error)
-            return json({ success: false, message: error.message }, { status: 500 })
+            console.error('Supabase update error:', error)
+            return json(
+              { success: false, message: error.message },
+              { status: 500 }
+            )
           }
 
-          return json({ success: true, message: 'Record deleted successfully' }, { status: 200 })
+          return json(
+            { success: true, sale: data },
+            { status: 200 }
+          )
         } catch (err) {
           console.error('Unexpected error:', err)
-          return json({ success: false, message: 'Something went wrong' }, { status: 500 })
+          return json(
+            { success: false, message: 'Something went wrong' },
+            { status: 500 }
+          )
         }
       },
     },

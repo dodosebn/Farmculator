@@ -1,43 +1,31 @@
-import { supabase } from '@/store/supabase'
 import { createFileRoute } from '@tanstack/react-router'
 import { json } from '@tanstack/react-start'
-
+import { supabase } from '@/store/supabase';
 export const Route = createFileRoute('/api/sales/delete')({
   server: {
     handlers: {
-      GET: async () => {
+      DELETE: async ({ request }) => {
         try {
-          // Ensure there's a logged-in user
-          const { data: userData, error: userErr } = await supabase.auth.getUser()
-          if (userErr || !userData?.user) {
-            return json({ success: false, message: 'Not authenticated' }, { status: 401 })
-          }
-          const user = userData.user
+          const body = await request.json() as { id?: string }
 
-          const { data, error } = await supabase
+          if (!body?.id) {
+            return json({ success: false, message: 'Missing id' }, { status: 400 })
+          }
+
+          const { error } = await supabase
             .from('sales')
-            .select('*')
-            .eq('user_id', user.id)
-            .order('created_at', { ascending: false })
+            .delete()
+            .eq('id', body.id)
 
           if (error) {
-            console.error('Supabase fetch error:', error)
-            return json(
-              { success: false, message: error.message },
-              { status: 500 }
-            )
+            console.error('Supabase delete error:', error)
+            return json({ success: false, message: error.message }, { status: 500 })
           }
 
-          return json(
-            { success: true, sales: data || [] },
-            { status: 200 }
-          )
+          return json({ success: true, message: 'Record deleted successfully' }, { status: 200 })
         } catch (err) {
           console.error('Unexpected error:', err)
-          return json(
-            { success: false, message: 'Something went wrong' },
-            { status: 500 }
-          )
+          return json({ success: false, message: 'Something went wrong' }, { status: 500 })
         }
       },
     },

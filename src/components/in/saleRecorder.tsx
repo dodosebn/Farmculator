@@ -188,10 +188,8 @@ return (
       </p>
     </div>
 
-    {/* 1. Main responsive grid */}
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
       
-      {/* Left form */}
       <div className="md:col-span-1">
         <SaleForm
           editingId={editingId}
@@ -203,10 +201,8 @@ return (
         />
       </div>
 
-      {/* Right section */}
       <div className="md:col-span-2 mt-6 md:mt-0">
 
-        {/* 2. Responsive summary cards */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-8">
           {[
             { title: "Total Sales", value: sales.length, emoji: <IoStatsChartSharp size={24} /> },
@@ -227,7 +223,6 @@ return (
           ))}
         </div>
 
-        {/* 3. Scrollable mobile tabs */}
         <div className="bg-white border border-gray-300 overflow-hidden">
           <div className="border-b border-gray-200">
             <nav className="flex overflow-x-auto whitespace-nowrap no-scrollbar">
