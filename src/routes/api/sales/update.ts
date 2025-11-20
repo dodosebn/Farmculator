@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { json } from '@tanstack/react-start'
-import { supabase } from '@/store/supabase';
+import { supabaseAdmin } from '@/store/lib/supabaseServer'; // ← Changed
+
 export const Route = createFileRoute('/api/sales/update')({
   server: {
     handlers: {
@@ -25,13 +26,12 @@ export const Route = createFileRoute('/api/sales/update')({
             )
           }
 
-          // Auto-calculate total if both quantity and price are provided
           if (updates.quantity && updates.price) {
             updates.total = Number(updates.quantity) * Number(updates.price)
           }
 
-          const { data, error } = await supabase
-            .from('sales')
+          const { data, error } = await supabaseAdmin
+            .from('sale')
             .update(updates)
             .eq('id', id)
             .select()

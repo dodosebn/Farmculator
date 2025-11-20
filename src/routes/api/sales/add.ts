@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { json } from '@tanstack/react-start'
-import { supabase } from '@/store/supabase';
+import { supabaseAdmin } from '@/store/lib/supabaseServer'; // ← Use server client
+
 export const Route = createFileRoute('/api/sales/add')({
   server: {
     handlers: {
@@ -10,22 +11,29 @@ export const Route = createFileRoute('/api/sales/add')({
             product?: string
             quantity?: number
             price?: number
+            user_id?: string
           }
 
-          const { product, quantity, price } = body
+          const { product, quantity, price, user_id } = body
 
-          if (!product || !quantity || !price) {
+          if (!product || !quantity || !price || !user_id) {
             return json(
-              { success: false, message: 'Missing fields' },
+              { success: false, message: 'Missing required fields' },
               { status: 400 }
             )
           }
 
           const total = Number(quantity) * Number(price)
 
-          const { data, error } = await supabase
-            .from('sales')
-            .insert([{ product, quantity, price, total }])
+          const { data, error } = await supabaseAdmin 
+            .from('sale')
+            .insert([{ 
+              user_id,
+              product, 
+              quantity, 
+              price, 
+              total 
+            }])
             .select()
             .single()
 

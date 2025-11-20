@@ -1,15 +1,25 @@
-import { supabase } from '@/store/supabase'
 import { createFileRoute } from '@tanstack/react-router'
 import { json } from '@tanstack/react-start'
-
-export const Route = createFileRoute(('/api/sales/fetch') as any)({
-  server: {
+import { supabaseAdmin } from '@/store/lib/supabaseServer'
+export const Route = createFileRoute('/api/sales/fetch')({
+  server: { 
     handlers: {
-      GET: async () => {
+      GET: async ({ request }) => {
         try {
-          const { data, error } = await supabase
-            .from('sales')
+          const url = new URL(request.url)
+          const user_id = url.searchParams.get('user_id')
+
+          if (!user_id) {
+            return json(
+              { success: false, message: 'user_id is required' },
+              { status: 400 }
+            )
+          }
+
+          const { data, error } = await supabaseAdmin 
+            .from('sale')
             .select('*')
+            .eq('user_id', user_id)  
             .order('created_at', { ascending: false })
 
           if (error) {
@@ -21,7 +31,7 @@ export const Route = createFileRoute(('/api/sales/fetch') as any)({
           }
 
           return json(
-            { success: true, sales: data },
+            { success: true, sales: data || [] },
             { status: 200 }
           )
         } catch (err) {

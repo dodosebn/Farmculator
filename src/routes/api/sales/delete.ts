@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { json } from '@tanstack/react-start'
-import { supabase } from '@/store/supabase';
+import { supabaseAdmin } from '@/store/lib/supabaseServer'
 export const Route = createFileRoute('/api/sales/delete')({
   server: {
     handlers: {
@@ -12,8 +12,8 @@ export const Route = createFileRoute('/api/sales/delete')({
             return json({ success: false, message: 'Missing id' }, { status: 400 })
           }
 
-          const { error } = await supabase
-            .from('sales')
+          const { error } = await  supabaseAdmin
+            .from('sale')
             .delete()
             .eq('id', body.id)
 
