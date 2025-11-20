@@ -55,7 +55,7 @@ const GenPage = ({ onToggleSidebar }: GenPageProps) => {
       </div>
 
       {/* Scrollable section */}
-      <div className="flex-1 overflow-y-auto">
+      {/* <div className="flex-1 overflow-y-auto">
         <div className="p-4">
           <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4 px-2">
             Recent Chats
@@ -79,7 +79,7 @@ const GenPage = ({ onToggleSidebar }: GenPageProps) => {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
 
       <div className="p-4 border-t border-gray-200 bg-white/80">
         <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-green-50 cursor-pointer">
