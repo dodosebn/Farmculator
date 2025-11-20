@@ -43,7 +43,7 @@ const IntroSentence = () => {
 
         <div className="absolute inset-0 flex items-center justify-center px-4">
           <div
-            className={`max-w-3xl text-center transform transition-all duration-1000 ${
+            className={`max-w-3xl text-center transform transition-all duration-200 ${
               isVisible
                 ? "translate-y-0 opacity-100"
                 : "translate-y-10 opacity-0"

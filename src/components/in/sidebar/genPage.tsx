@@ -3,6 +3,7 @@ import UseLogo from "@/hooks/useLogo";
 import { useUserStore } from "@/hooks/useUserStore";
 import { FiSidebar, FiPlus, FiMessageSquare } from "react-icons/fi";
 import { Link } from "@tanstack/react-router";
+import { FaAngleDoubleLeft } from "react-icons/fa";
 
 interface GenPageProps {
   onToggleSidebar: () => void;
@@ -34,10 +35,13 @@ const GenPage = ({ onToggleSidebar }: GenPageProps) => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-b from-white to-gray-50/50">
+    <div className="h-full flex flex-col bg-linear-to-b from-white to-gray-50/50">
 
       <div className="px-5 pb-3 border-b border-gray-200 bg-white">
+     
         <div className="flex items-center justify-between">
+             <Link to="/in/Dashboard"><FaAngleDoubleLeft size={20} />
+</Link>
           <UseLogo />
           <button
             onClick={onToggleSidebar}
