@@ -1,13 +1,14 @@
-import AuthUI from '@/components/account/authUI'
-import Dashboard from '@/components/account/dashboard'
-import { createFileRoute } from '@tanstack/react-router'
+import Dashboard from "@/components/account/dashboard";
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/Account')({
+export const Route = createFileRoute("/Account")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
-  return <div>
-    <Dashboard />
-  </div>
+  return (
+    <div>
+      <Dashboard />
+    </div>
+  );
 }

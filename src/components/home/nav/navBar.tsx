@@ -8,15 +8,29 @@ const NavBar = () => {
 
   const navLinks = [
     { name: "Home", path: "/" },
-    { name: "About", path: "/" },
-    { name: "Services", path: "/" },
+    { name: "About", path: "#About" },
+    { name: "Services", path: "#Services" },
     { name: "SignIn", path: "/Account" },
   ];
 
   const handleRoute = (path: string) => {
+  if (!path.startsWith("#")) {
     navigate({ to: path });
     setIsMenuOpen(false);
-  };
+    return;
+  }
+
+  const id = path.replace("#", "");
+
+  navigate({
+    to: "/",  
+    hash: id, 
+    hashScrollIntoView: { behavior: "smooth" },
+  });
+
+  setIsMenuOpen(false);
+};
+
 
   return (
     <nav className="relative bg-[#0a1905] px-4 sm:px-6 py-4 shadow-md">

@@ -24,7 +24,10 @@ export const Route = createFileRoute("/api/conversations" as any)({
           return json({ conversation: data });
         } catch (err) {
           console.error(err);
-          return json({ error: "Could not create conversation" }, { status: 500 });
+          return json(
+            { error: "Could not create conversation" },
+            { status: 500 }
+          );
         }
       },
     },

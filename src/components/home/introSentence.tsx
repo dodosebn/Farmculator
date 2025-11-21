@@ -1,6 +1,7 @@
 import UseLogo from "@/hooks/useLogo";
 import { Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
+import GetStarted from "./utils/getStarted";
 
 const IntroSentence = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -21,7 +22,7 @@ const IntroSentence = () => {
 
   return (
     <div className="relative w-full">
-      <div className="relative w-full h-screen md:h-[500px] overflow-hidden">
+      <div className="relative w-full h-[500px] overflow-hidden">
         <div className="relative w-full h-full">
           {ImgFlippers.map((src, index) => (
             <img
@@ -54,7 +55,7 @@ const IntroSentence = () => {
               <UseLogo />
             </h1>
 
-            <p className="text-xs sm:text-base md:text-lg text-white leading-relaxed drop-shadow-md max-w-2xl mx-auto mb-6">
+            <p className="text-base md:text-lg text-white leading-relaxed drop-shadow-md max-w-2xl mx-auto mb-6">
               A digital platform that helps farmers track sales, manage records,
               and get AI-driven insights about farm performance. Combining data
               management, visualization and AI intelligence to help farmers make
@@ -63,10 +64,10 @@ const IntroSentence = () => {
 
             <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-6">
               {[
-                "📊 Track Sales",
-                "🌿 Manage Records",
-                "🤖 AI Insights",
-                "📈 Data Visualization",
+                " Track Sales",
+                " Manage Records",
+                "AI Insights",
+                "Data Visualization",
               ].map((feature, index) => (
                 <span
                   key={feature}
@@ -77,22 +78,9 @@ const IntroSentence = () => {
                 </span>
               ))}
             </div>
-            <Link to="/Account">
-              <button className="group bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-2xl border-2 border-emerald-400/50">
-                <span className="flex items-center gap-2">
-                  Get Started
-                  <span className="group-hover:translate-x-1 transition-transform">
-                    🚀
-                  </span>
-                </span>
-              </button>
-            </Link>
+        <GetStarted/>
 
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 animate-bounce">
-              <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
-                <div className="w-1 h-3 bg-white rounded-full mt-2 animate-pulse"></div>
-              </div>
-            </div>
+           
           </div>
         </div>
 

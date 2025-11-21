@@ -3,7 +3,7 @@ import AuthUI from "./authUI";
 const Dashboard = () => {
   return (
     <div
-        style={{
+      style={{
         backgroundImage: "url('/img/account-side.jpg')",
         backgroundRepeat: "repeat",
         backgroundSize: "cover",
