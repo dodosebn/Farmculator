@@ -61,7 +61,6 @@ const SalesTable: React.FC<SalesTableProps> = ({
       ) : sales.length === 0 ? (
         <p>No sales recorded yet.</p>
       ) : activeTab === "list" ? (
-        /* ⭐ Responsive wrapper added here */
         <div className="overflow-x-auto w-full">
           <table className="min-w-max w-full text-sm">
             <thead className="bg-gray-50">
@@ -91,14 +90,14 @@ const SalesTable: React.FC<SalesTableProps> = ({
                   <td className="px-6 py-4 space-x-3">
                     <button
                       onClick={() => handleEditSale(sale)}
-                      className="text-blue-600 hover:text-blue-800"
+                      className="text-blue-600 cursor-pointer hover:text-blue-800"
                     >
                       Edit
                     </button>
 
                     <button
                       onClick={() => handleDeleteSale(sale.id)}
-                      className="text-red-600 hover:text-red-800"
+                      className="text-red-600 cursor-pointer hover:text-red-800"
                     >
                       Delete
                     </button>
@@ -144,7 +143,7 @@ const SalesTable: React.FC<SalesTableProps> = ({
             <button
               onClick={generateAISummary}
               disabled={isGeneratingSummary || sales.length === 0}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg"
+              className="bg-blue-600 cursor-pointer text-white px-6 py-3 rounded-lg"
             >
               {isGeneratingSummary ? "Analyzing..." : "Generate AI Summary"}
             </button>

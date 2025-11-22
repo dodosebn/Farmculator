@@ -8,11 +8,10 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createFileRoute } from '@tanstack/react-router'
-
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AccountRouteImport } from './routes/Account'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ShareEncodedRouteImport } from './routes/share/$encoded'
 import { Route as InProfileRouteImport } from './routes/in/profile'
 import { Route as InFarmAdvisorRouteImport } from './routes/in/farm-advisor'
 import { Route as In_layoutRouteImport } from './routes/in/__layout'
@@ -32,13 +31,6 @@ import { Route as DemoStartSsrSpaModeRouteImport } from './routes/demo/start.ssr
 import { Route as DemoStartSsrFullSsrRouteImport } from './routes/demo/start.ssr.full-ssr'
 import { Route as DemoStartSsrDataOnlyRouteImport } from './routes/demo/start.ssr.data-only'
 
-const InRouteImport = createFileRoute('/in')()
-
-const InRoute = InRouteImport.update({
-  id: '/in',
-  path: '/in',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AccountRoute = AccountRouteImport.update({
   id: '/Account',
   path: '/Account',
@@ -47,6 +39,11 @@ const AccountRoute = AccountRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShareEncodedRoute = ShareEncodedRouteImport.update({
+  id: '/share/$encoded',
+  path: '/share/$encoded',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InProfileRoute = InProfileRouteImport.update({
@@ -149,6 +146,7 @@ export interface FileRoutesByFullPath {
   '/in': typeof In_layoutRoute
   '/in/farm-advisor': typeof InFarmAdvisorRoute
   '/in/profile': typeof InProfileRoute
+  '/share/$encoded': typeof ShareEncodedRoute
   '/api/sales/add': typeof ApiSalesAddRoute
   '/api/sales/delete': typeof ApiSalesDeleteRoute
   '/api/sales/fetch': typeof ApiSalesFetchRoute
@@ -171,6 +169,7 @@ export interface FileRoutesByTo {
   '/in': typeof In_layoutRoute
   '/in/farm-advisor': typeof InFarmAdvisorRoute
   '/in/profile': typeof InProfileRoute
+  '/share/$encoded': typeof ShareEncodedRoute
   '/api/sales/add': typeof ApiSalesAddRoute
   '/api/sales/delete': typeof ApiSalesDeleteRoute
   '/api/sales/fetch': typeof ApiSalesFetchRoute
@@ -191,10 +190,10 @@ export interface FileRoutesById {
   '/api/conversation': typeof ApiConversationRoute
   '/api/farm-chat': typeof ApiFarmChatRoute
   '/in/Dashboard': typeof InDashboardRoute
-  '/in': typeof InRouteWithChildren
   '/in/__layout': typeof In_layoutRoute
   '/in/farm-advisor': typeof InFarmAdvisorRoute
   '/in/profile': typeof InProfileRoute
+  '/share/$encoded': typeof ShareEncodedRoute
   '/api/sales/add': typeof ApiSalesAddRoute
   '/api/sales/delete': typeof ApiSalesDeleteRoute
   '/api/sales/fetch': typeof ApiSalesFetchRoute
@@ -219,6 +218,7 @@ export interface FileRouteTypes {
     | '/in'
     | '/in/farm-advisor'
     | '/in/profile'
+    | '/share/$encoded'
     | '/api/sales/add'
     | '/api/sales/delete'
     | '/api/sales/fetch'
@@ -241,6 +241,7 @@ export interface FileRouteTypes {
     | '/in'
     | '/in/farm-advisor'
     | '/in/profile'
+    | '/share/$encoded'
     | '/api/sales/add'
     | '/api/sales/delete'
     | '/api/sales/fetch'
@@ -260,10 +261,10 @@ export interface FileRouteTypes {
     | '/api/conversation'
     | '/api/farm-chat'
     | '/in/Dashboard'
-    | '/in'
     | '/in/__layout'
     | '/in/farm-advisor'
     | '/in/profile'
+    | '/share/$encoded'
     | '/api/sales/add'
     | '/api/sales/delete'
     | '/api/sales/fetch'
@@ -284,7 +285,7 @@ export interface RootRouteChildren {
   ApiConversationRoute: typeof ApiConversationRoute
   ApiFarmChatRoute: typeof ApiFarmChatRoute
   InDashboardRoute: typeof InDashboardRoute
-  InRoute: typeof InRouteWithChildren
+  ShareEncodedRoute: typeof ShareEncodedRoute
   ApiSalesAddRoute: typeof ApiSalesAddRoute
   ApiSalesDeleteRoute: typeof ApiSalesDeleteRoute
   ApiSalesFetchRoute: typeof ApiSalesFetchRoute
@@ -300,13 +301,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/in': {
-      id: '/in'
-      path: '/in'
-      fullPath: '/in'
-      preLoaderRoute: typeof InRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/Account': {
       id: '/Account'
       path: '/Account'
@@ -319,6 +313,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/share/$encoded': {
+      id: '/share/$encoded'
+      path: '/share/$encoded'
+      fullPath: '/share/$encoded'
+      preLoaderRoute: typeof ShareEncodedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/in/profile': {
@@ -337,7 +338,7 @@ declare module '@tanstack/react-router' {
     }
     '/in/__layout': {
       id: '/in/__layout'
-      path: '/in'
+      path: ''
       fullPath: '/in'
       preLoaderRoute: typeof In_layoutRouteImport
       parentRoute: typeof InRoute
@@ -450,20 +451,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface InRouteChildren {
-  In_layoutRoute: typeof In_layoutRoute
-  InFarmAdvisorRoute: typeof InFarmAdvisorRoute
-  InProfileRoute: typeof InProfileRoute
-}
-
-const InRouteChildren: InRouteChildren = {
-  In_layoutRoute: In_layoutRoute,
-  InFarmAdvisorRoute: InFarmAdvisorRoute,
-  InProfileRoute: InProfileRoute,
-}
-
-const InRouteWithChildren = InRoute._addFileChildren(InRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRoute,
@@ -471,7 +458,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiConversationRoute: ApiConversationRoute,
   ApiFarmChatRoute: ApiFarmChatRoute,
   InDashboardRoute: InDashboardRoute,
-  InRoute: InRouteWithChildren,
+  ShareEncodedRoute: ShareEncodedRoute,
   ApiSalesAddRoute: ApiSalesAddRoute,
   ApiSalesDeleteRoute: ApiSalesDeleteRoute,
   ApiSalesFetchRoute: ApiSalesFetchRoute,

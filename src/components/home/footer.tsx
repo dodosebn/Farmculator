@@ -4,13 +4,19 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative bg-[#0a1905]
-     text-white overflow-hidden">
+    <footer
+      className="relative bg-[#0a1905]
+     text-white overflow-hidden"
+    >
       <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-0 left-0 w-72 h-72 bg-emerald-400 rounded-full
-         blur-3xl"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96
-         bg-green-400 rounded-full blur-3xl"></div>
+        <div
+          className="absolute top-0 left-0 w-72 h-72 bg-emerald-400 rounded-full
+         blur-3xl"
+        ></div>
+        <div
+          className="absolute bottom-0 right-0 w-96 h-96
+         bg-green-400 rounded-full blur-3xl"
+        ></div>
       </div>
 
       <div className="relative container mx-auto px-10 py-16 max-w-7xl">
@@ -18,7 +24,9 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2 text-gray-300">
               <span>© {currentYear}</span>
-              <div className="hidden md:flex"><UseLogo /></div>
+              <div className="hidden md:flex">
+                <UseLogo />
+              </div>
               <span>All rights reserved.</span>
             </div>
 

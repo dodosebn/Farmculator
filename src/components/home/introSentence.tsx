@@ -78,9 +78,7 @@ const IntroSentence = () => {
                 </span>
               ))}
             </div>
-        <GetStarted/>
-
-           
+            <GetStarted />
           </div>
         </div>
 

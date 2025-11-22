@@ -17,7 +17,7 @@ interface SaleFormProps {
   ) => void;
 
   isSubmitting: boolean;
-
+  handleShare: () => void;
   cancelEdit: () => void;
 }
 
@@ -28,12 +28,25 @@ const SaleForm: React.FC<SaleFormProps> = ({
   formData,
   isSubmitting,
   cancelEdit,
+  handleShare
 }) => {
   return (
           <div className="bg-white p-6 border border-gray-300">
+                 <div className="flex justify-between">
+
             <h2 className="text-xl font-semibold mb-6 text-gray-800">
               {editingId ? "Edit Sale" : "Add New Sale"}
             </h2>
+            <div className="cursor-pointer">
+                <button
+                  onClick={handleShare}
+                  className="bg-green-500 px-4 py-1 text-white
+                  rounded-full hover:bg-green-600 transition-colors cursor-pointer"
+                >
+                  Share
+                </button>
+                </div>
+              </div>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -103,7 +116,7 @@ const SaleForm: React.FC<SaleFormProps> = ({
                     !formData.quantity ||
                     !formData.price
                   }
-                  className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold transition-all duration-200"
+                  className="flex-1 cursor-pointer bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold transition-all duration-200"
                 >
                   {isSubmitting
                     ? editingId
