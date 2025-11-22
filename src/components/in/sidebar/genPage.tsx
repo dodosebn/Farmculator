@@ -35,13 +35,12 @@ const GenPage = ({ onToggleSidebar }: GenPageProps) => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-linear-to-b from-white to-gray-50/50">
-
+    <div className="h-full  flex flex-col bg-linear-to-b from-white to-gray-50/50">
       <div className="px-5 pb-3 border-b border-gray-200 bg-white">
-     
         <div className="flex items-center justify-between">
-             <Link to="/in/Dashboard"><FaAngleDoubleLeft size={20} />
-</Link>
+          <Link to="/in/Dashboard">
+            <FaAngleDoubleLeft size={20} />
+          </Link>
           <UseLogo />
           <button
             onClick={onToggleSidebar}
@@ -96,14 +95,16 @@ const GenPage = ({ onToggleSidebar }: GenPageProps) => {
           </div>
 
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-gray-900 truncate">{displayName}</p>
+            <p className="text-sm font-semibold text-gray-900 truncate">
+              {displayName}
+            </p>
             <p className="text-xs text-gray-500 truncate">{email}</p>
 
-            {!hasName && email && (
+            {/* {!hasName && email && (
               <Link to="/in/profile" className="text-xs text-orange-600">
                 Complete your profile →
               </Link>
-            )}
+            )} */}
           </div>
         </div>
       </div>

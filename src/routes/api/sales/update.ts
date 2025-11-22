@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { json } from '@tanstack/react-start'
-import { supabaseAdmin } from '@/store/lib/supabaseServer'; // ← Changed
+import { supabaseAdmin } from '@/store/lib/supabaseServer'; 
 
 export const Route = createFileRoute('/api/sales/update')({
   server: {

@@ -10,38 +10,7 @@ ResponsiveContainer,
 Cell,
 } from "recharts";
 import { useState } from "react";
-
-export interface Sale {
-id: number;
-product: string;
-quantity: number;
-price: number;
-total: number;
-created_at?: string;
-}
-
-export interface ProductRevenue {
-product: string;
-revenue: number;
-}
-
-interface SalesTableProps {
-loading: boolean;
-sales: Sale[];
-activeTab: "list" | "charts" | "ai";
-
-productRevenueData: ProductRevenue[];
-
-COLORS: string[];
-
-aiSummary: string | null;
-
-generateAISummary: () => Promise<void>;
-isGeneratingSummary: boolean;
-
-handleEditSale: (sale: Sale) => void;
-handleDeleteSale: (id: number) => void;
-}
+import { SalesTableProps } from "./type";
 
 const SalesTable: React.FC<SalesTableProps> = ({
 loading,
@@ -144,7 +113,7 @@ return ( <div className="p-6">
         <button
           onClick={handleGenerateAI}
           disabled={showGenerating || sales.length === 0}
-          className={`bg-blue-600 cursor-pointer text-white px-6 py-3 rounded-lg ${
+          className={`bg-green-800 cursor-pointer text-white px-6 py-3 rounded-lg ${
             showGenerating ? "opacity-60 cursor-not-allowed" : ""
           }`}
         >

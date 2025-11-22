@@ -1,44 +1,21 @@
 import { create } from "zustand";
 import { supabase } from "@/store/supabase";
-
-export interface Sale {
-  id: number;
-  product: string;
-  quantity: number;
-  price: number;
-  total: number;
-  created_at: string;
-}
-
-interface SalesStore {
-  sales: Sale[];
-  loading: boolean;
-  fetchSales: () => Promise<void>;
-  addSale: (sale: Omit<Sale, "id" | "created_at">) => Promise<void>;
-  updateSale: (id: number, updates: Partial<Sale>) => Promise<void>;
-  deleteSale: (id: number) => Promise<void>;
-}
-
+import { SalesStore } from "./type";
 export const useSalesStore = create<SalesStore>((set, get) => ({
   sales: [],
   loading: false,
-
-  // -------------------------------------------------
-  // FETCH ONLY LOGGED-IN USER'S SALES
-  // -------------------------------------------------
   fetchSales: async () => {
     set({ loading: true });
     try {
-      // 1️⃣ Get logged in user
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
       if (!user) {
         console.warn("No user logged in");
         set({ sales: [] });
         return;
       }
-
-      // 2️⃣ Fetch ONLY this user’s sales
       const res = await fetch(`/api/sales/fetch?user_id=${user.id}`);
       const data = await res.json();
 
@@ -56,12 +33,11 @@ export const useSalesStore = create<SalesStore>((set, get) => ({
     }
   },
 
-  // -------------------------------------------------
-  // ADD SALE (must include user_id)
-  // -------------------------------------------------
   addSale: async (sale) => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) throw new Error("User not authenticated");
 
       const res = await fetch("/api/sales/add", {
@@ -69,7 +45,7 @@ export const useSalesStore = create<SalesStore>((set, get) => ({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...sale,
-          user_id: user.id, // ← IMPORTANT
+          user_id: user.id,
         }),
       });
 
@@ -86,9 +62,6 @@ export const useSalesStore = create<SalesStore>((set, get) => ({
     }
   },
 
-  // -------------------------------------------------
-  // UPDATE SALE
-  // -------------------------------------------------
   updateSale: async (id, updates) => {
     try {
       const res = await fetch("/api/sales/update", {
@@ -112,9 +85,6 @@ export const useSalesStore = create<SalesStore>((set, get) => ({
     }
   },
 
-  // -------------------------------------------------
-  // DELETE SALE
-  // -------------------------------------------------
   deleteSale: async (id) => {
     try {
       const res = await fetch("/api/sales/delete", {

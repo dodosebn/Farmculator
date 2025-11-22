@@ -42,13 +42,13 @@ export const Route = createFileRoute("/api/ai-summary" as any)({
 You are an intelligent business analyst. Analyze the following sales data and produce a concise, insightful summary.
 
 Sales Overview:
-- Total Sales: ${salesData.totalSales}
-- Total Revenue: ₦${salesData.totalRevenue.toLocaleString()}
-- Total Quantity Sold: ${salesData.totalQuantity}
-- Average Price per Item: ₦${salesData.averagePrice.toFixed(2)}
-- Highest Sale: ₦${salesData.highestSale.toLocaleString()}
-- Lowest Sale: ₦${salesData.lowestSale.toLocaleString()}
-- **Top Revenue Product**: ${
+ Total Sales: ${salesData.totalSales}
+ Total Revenue: ₦${salesData.totalRevenue.toLocaleString()}
+Total Quantity Sold: ${salesData.totalQuantity}
+Average Price per Item: ₦${salesData.averagePrice.toFixed(2)}
+Highest Sale: ₦${salesData.highestSale.toLocaleString()}
+Lowest Sale: ₦${salesData.lowestSale.toLocaleString()}
+ **Top Revenue Product**: ${
             salesData.topRevenueProduct || "N/A"
           } (Highest total earnings)
 - **Top Quantity Product**: ${

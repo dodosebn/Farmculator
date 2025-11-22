@@ -52,9 +52,9 @@ const InProfileRoute = InProfileRouteImport.update({
   getParentRoute: () => InRoute,
 } as any)
 const InFarmAdvisorRoute = InFarmAdvisorRouteImport.update({
-  id: '/farm-advisor',
-  path: '/farm-advisor',
-  getParentRoute: () => InRoute,
+  id: '/in/farm-advisor',
+  path: '/in/farm-advisor',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const In_layoutRoute = In_layoutRouteImport.update({
   id: '/__layout',
@@ -285,6 +285,7 @@ export interface RootRouteChildren {
   ApiConversationRoute: typeof ApiConversationRoute
   ApiFarmChatRoute: typeof ApiFarmChatRoute
   InDashboardRoute: typeof InDashboardRoute
+  InFarmAdvisorRoute: typeof InFarmAdvisorRoute
   ShareEncodedRoute: typeof ShareEncodedRoute
   ApiSalesAddRoute: typeof ApiSalesAddRoute
   ApiSalesDeleteRoute: typeof ApiSalesDeleteRoute
@@ -331,10 +332,10 @@ declare module '@tanstack/react-router' {
     }
     '/in/farm-advisor': {
       id: '/in/farm-advisor'
-      path: '/farm-advisor'
+      path: '/in/farm-advisor'
       fullPath: '/in/farm-advisor'
       preLoaderRoute: typeof InFarmAdvisorRouteImport
-      parentRoute: typeof InRoute
+      parentRoute: typeof rootRouteImport
     }
     '/in/__layout': {
       id: '/in/__layout'
@@ -458,6 +459,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiConversationRoute: ApiConversationRoute,
   ApiFarmChatRoute: ApiFarmChatRoute,
   InDashboardRoute: InDashboardRoute,
+  InFarmAdvisorRoute: InFarmAdvisorRoute,
   ShareEncodedRoute: ShareEncodedRoute,
   ApiSalesAddRoute: ApiSalesAddRoute,
   ApiSalesDeleteRoute: ApiSalesDeleteRoute,

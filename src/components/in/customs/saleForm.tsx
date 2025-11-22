@@ -1,25 +1,5 @@
 import React from "react";
-
-export interface SaleFormData {
-  product: string;
-  quantity: number | string; 
-  price: number | string;
-}
-
-interface SaleFormProps {
-  editingId: number | null;
-  formData: SaleFormData;
-
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-
-  handleChange: (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => void;
-
-  isSubmitting: boolean;
-  handleShare: () => void;
-  cancelEdit: () => void;
-}
+import { SaleFormProps } from "./type";
 
 const SaleForm: React.FC<SaleFormProps> = ({
   editingId,
@@ -58,7 +38,8 @@ const SaleForm: React.FC<SaleFormProps> = ({
                   value={formData.product}
                   onChange={handleChange}
                   placeholder="e.g., Organic Wheat"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 
+                  focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   required
                 />
               </div>
@@ -74,7 +55,8 @@ const SaleForm: React.FC<SaleFormProps> = ({
                     min="1"
                     value={formData.quantity}
                     onChange={handleChange}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full border border-gray-300 rounded-lg 
+                    px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     required
                   />
                 </div>
